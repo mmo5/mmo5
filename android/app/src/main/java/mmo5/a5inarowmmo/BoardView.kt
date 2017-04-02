@@ -37,7 +37,7 @@ class BoardView(context: Context) : View(context) {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.getX()
         val y = event.getY()
-        val rect = boardModel!!.setRectByXy(x, y, Random().nextInt())
+        boardModel!!.setRectByXy(x, y, Random().nextInt())
         invalidate();
         return super.onTouchEvent(event)
     }

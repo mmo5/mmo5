@@ -50,6 +50,10 @@ class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin: Int
 
     fun setRectByXy(x: Float, y: Float, color: Int): Unit {
         val cellIndex = getMatrixLocationByXy(x, y)
+        if (cellIndex.first < 0 || cellIndex.first >= numOfCells ||
+                cellIndex.second < 0 || cellIndex.second >= numOfCells) {
+            return
+        }
         rectangles[cellIndex.first][cellIndex.second] = RectangleHolder(rect = getRectFromIndex(cellIndex.first, cellIndex.second), color = color)
     }
 
