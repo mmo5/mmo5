@@ -1,29 +1,32 @@
 package mmo5.a5inarowmmo
 
 
-class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, val margin: Int) {
+class BoardToViewModel(val height: Int, val width: Int, val numOfCells: Int, margin: Int) {
 
+    private val isXBigger = height < width
+    private val marginX = if (!isXBigger) margin else Math.abs(height - width) / 2 + margin
+    private val marginY = if (isXBigger) margin else Math.abs(height - width) / 2 + margin
     private val sizeBeforeMarginReduction = Math.min(height, width)
     private val sizeAfterMarginReduction = sizeBeforeMarginReduction - (margin * 2)
     private val boxSize = (sizeAfterMarginReduction / numOfCells) - 2 // 2 is for lines
     fun getHorizontalLines(): List<ViewLine> {
         return (0..numOfCells).map { index ->
-            val horizontalValue = (margin + index * (boxSize + 2)).toFloat()
+            val horizontalValue = (marginY + index * (boxSize + 2)).toFloat()
             ViewLine(
-                startX = margin.toFloat(),
+                startX = marginX.toFloat(),
                 startY = horizontalValue,
-                endX = (sizeBeforeMarginReduction - margin).toFloat(),
+                endX = (width - marginX).toFloat(),
                 endY = horizontalValue
         ) }
     }
 
     fun  getVerticalLines(): List<ViewLine> {
         return (0..numOfCells).map { index ->
-            val horizontalValue = (margin + index * (boxSize + 2)).toFloat()
+            val horizontalValue = (marginX + index * (boxSize + 2)).toFloat()
             ViewLine(
-                    startY = margin.toFloat(),
+                    startY = marginY.toFloat(),
                     startX = horizontalValue,
-                    endY = (sizeBeforeMarginReduction - margin).toFloat(),
+                    endY = (height - marginY).toFloat(),
                     endX = horizontalValue
             ) }
     }

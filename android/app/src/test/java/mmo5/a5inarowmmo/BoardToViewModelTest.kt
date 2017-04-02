@@ -43,4 +43,19 @@ class BoardToViewModelTest {
         assertEquals(ViewLine(startX = 0f, startY = 0f, endX = 0f, endY = 100f), lines[0])
         assertEquals(ViewLine(startX = 100f, startY = 0f, endX = 100f, endY = 100f), lines[1])
     }
+
+    @Test fun `getHorizontalLines-NoSymmetric`() {
+        val tested = BoardToViewModel(140, 100, 1, 0)
+        val lines = tested.getHorizontalLines()
+        assertEquals(2, lines.size)
+        assertEquals(ViewLine(startX = 0f, startY = 20f, endX = 100f, endY = 20f), lines[0])
+        assertEquals(ViewLine(startX = 0f, startY = 120f, endX = 100f, endY = 120f), lines[1])
+    }
+    @Test fun `getVerticalLines-NoSymmetric`() {
+        val tested = BoardToViewModel(140, 100, 1, 0)
+        val lines = tested.getVerticalLines()
+        assertEquals(2, lines.size)
+        assertEquals(ViewLine(startX = 0f, startY = 20f, endX = 0f, endY = 120f), lines[0])
+        assertEquals(ViewLine(startX = 100f, startY = 20f, endX = 100f, endY = 120f), lines[1])
+    }
 }
