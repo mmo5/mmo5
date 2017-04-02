@@ -4,14 +4,16 @@ import android.graphics.Color
 import android.graphics.Rect
 
 
-class BoardToViewModel(val height: Int, val width: Int, val numOfCells: Int, margin: Int) {
+class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin: Int) {
 
-    private val isXBigger = height < width
-    private val marginX = if (!isXBigger) margin else Math.abs(height - width) / 2 + margin
-    private val marginY = if (isXBigger) margin else Math.abs(height - width) / 2 + margin
-    private val sizeBeforeMarginReduction = Math.min(height, width)
+    private val roundedHeight = height - height.rem(numOfCells)
+    private val roundedWidth = width - width.rem(numOfCells)
+    private val isXBigger = roundedHeight < roundedWidth
+    private val marginX = if (!isXBigger) margin else Math.abs(roundedHeight - roundedWidth) / 2 + margin
+    private val marginY = if (isXBigger) margin else Math.abs(roundedHeight - roundedWidth) / 2 + margin
+    private val sizeBeforeMarginReduction = Math.min(roundedHeight, roundedWidth)
     private val sizeAfterMarginReduction = sizeBeforeMarginReduction - (margin * 2)
-    private val boxSize = (sizeAfterMarginReduction / numOfCells) - 2 // 2 is for lines
+    private val boxSizeIncludeTopLeftLines = (sizeAfterMarginReduction / numOfCells)
     private val rectangles: MutableList<MutableList<RectangleHolder>> =
             (1..numOfCells).map {
                 (1..numOfCells).map { RectangleHolder(rect = Rect(0, 0, 0, 0), color = Color.WHITE) }
@@ -20,11 +22,11 @@ class BoardToViewModel(val height: Int, val width: Int, val numOfCells: Int, mar
 
     fun getHorizontalLines(): List<ViewLine> {
         return (0..numOfCells).map { index ->
-            val horizontalValue = (marginY + index * (boxSize + 2)).toFloat()
+            val horizontalValue = (marginY + index * (boxSizeIncludeTopLeftLines)).toFloat()
             ViewLine(
                     startX = marginX.toFloat(),
                     startY = horizontalValue,
-                    endX = (width - marginX).toFloat(),
+                    endX = (marginX + numOfCells * (boxSizeIncludeTopLeftLines)).toFloat(),
                     endY = horizontalValue
             )
         }
@@ -32,11 +34,11 @@ class BoardToViewModel(val height: Int, val width: Int, val numOfCells: Int, mar
 
     fun getVerticalLines(): List<ViewLine> {
         return (0..numOfCells).map { index ->
-            val horizontalValue = (marginX + index * (boxSize + 2)).toFloat()
+            val horizontalValue = (marginX + index * (boxSizeIncludeTopLeftLines)).toFloat()
             ViewLine(
                     startY = marginY.toFloat(),
                     startX = horizontalValue,
-                    endY = (height - marginY).toFloat(),
+                    endY = (marginY + numOfCells * (boxSizeIncludeTopLeftLines)).toFloat(),
                     endX = horizontalValue
             )
         }
@@ -52,13 +54,17 @@ class BoardToViewModel(val height: Int, val width: Int, val numOfCells: Int, mar
     }
 
     fun getMatrixLocationByXy(x: Float, y: Float): Pair<Int, Int> {
-        val resX = (x - marginX) / (boxSize + 1)
-        val resY = (y - marginY) / (boxSize + 1)
+        val resX = (x - marginX) / (boxSizeIncludeTopLeftLines)
+        val resY = (y - marginY) / (boxSizeIncludeTopLeftLines)
         return Pair(resX.toInt(), resY.toInt())
     }
 
     fun getRectFromIndex(x: Int, y: Int): Rect {
-        return Rect(x * boxSize + marginX + 1, y * boxSize + marginY + 1, x * boxSize + marginX + 1 + boxSize, y * boxSize + marginY + 1 + boxSize)
+        return Rect(
+                x * boxSizeIncludeTopLeftLines + marginX,
+                y * boxSizeIncludeTopLeftLines + marginY,
+                x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
+                y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
     }
 }
 
