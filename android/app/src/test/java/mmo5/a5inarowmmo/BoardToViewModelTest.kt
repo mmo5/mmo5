@@ -1,5 +1,6 @@
 package mmo5.a5inarowmmo
 
+import android.graphics.Rect
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -57,5 +58,24 @@ class BoardToViewModelTest {
         assertEquals(2, lines.size)
         assertEquals(ViewLine(startX = 0f, startY = 20f, endX = 0f, endY = 120f), lines[0])
         assertEquals(ViewLine(startX = 100f, startY = 20f, endX = 100f, endY = 120f), lines[1])
+    }
+    @Test fun `getMatrixLocationByXy`() {
+        val tested = BoardToViewModel(100, 100, 1, 0)
+        val location = tested.getMatrixLocationByXy(50f, 50f)
+        assertEquals(Pair(0, 0), location)
+    }
+    @Test fun `getMatrixLocationByXy-2cells`() {
+        val tested = BoardToViewModel(100, 100, 2, 0)
+        val location = tested.getMatrixLocationByXy(70f, 70f)
+        assertEquals(Pair(1, 1), location)
+    }
+
+    @Test fun `getRectFromIndex`() {
+        val tested = BoardToViewModel(100, 100, 2, 0)
+        val rect = tested.getRectFromIndex(0, 0)
+        assertEquals(Rect(1, 1, 99, 99).bottom, rect.bottom)
+        assertEquals(Rect(1, 1, 99, 99).top, rect.top)
+        assertEquals(Rect(1, 1, 99, 99).left, rect.left)
+        assertEquals(Rect(1, 1, 99, 99).right, rect.right)
     }
 }
