@@ -5,7 +5,7 @@ data class Message(val msgType: MsgType,
                    val playerLoggedInRequest: PlayerLoggedInRequest? = null,
                    val playerMove: PlayerMove? = null,
                    val winner: Winner? = null,
-                   val players: Map<Int, String>
+                   val players: Map<Int, String>? = null
 )
 
 enum class MsgType {
