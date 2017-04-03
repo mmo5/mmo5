@@ -20,6 +20,7 @@ public class GameManager {
   private final Gson gson;
   private final AtomicInteger playerCounter;
   private final Map<Session, PlayerLoggedInResponse> sessionPlayerMap;
+  private final Map<Integer, Session> playerIdToSessionMap;
   private final BoardManagerV2 boardManager;
   private final Cache<Integer, String> playerMoveCache = CacheBuilder.newBuilder()
           .maximumSize(200)
@@ -31,6 +32,7 @@ public class GameManager {
     this.playerCounter = new AtomicInteger(0);
     this.gson = new Gson();
     this.boardManager = new BoardManagerV2(15, 5);
+    this.playerIdToSessionMap = Maps.newConcurrentMap();
   }
 
   public void handleIncomingMessage(Session session, String jsonMsg) {
@@ -50,10 +52,18 @@ public class GameManager {
 
   public void handlePlayerLoggedInRequestMsg(Session session, Message msg) {
     PlayerLoggedInRequest playerLoggedInRequest = msg.getPlayerLoggedInRequest();
-    PlayerLoggedInResponse playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.incrementAndGet(), playerLoggedInRequest.getPlayerName());
-    this.sessionPlayerMap.put(session, playerLoggedInResponse);
-    System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId() + ", Message: " + playerLoggedInResponse);
+    PlayerLoggedInResponse playerLoggedInResponse;
+    int playerId = playerLoggedInRequest.getPlayerId();
+    if (this.playerIdToSessionMap.containsKey(playerId)) {
+      this.sessionPlayerMap.remove(this.playerIdToSessionMap.get(playerId));
+      playerLoggedInResponse = new PlayerLoggedInResponse(playerId, playerLoggedInRequest.getPlayerName());
+    } else {
+      playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.incrementAndGet(), playerLoggedInRequest.getPlayerName());
+    }
     Map<Integer, String> players = getPlayers();
+    this.sessionPlayerMap.put(session, playerLoggedInResponse);
+    this.playerIdToSessionMap.put(playerLoggedInResponse.getPlayerId(), session);
+    System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId() + ", Message: " + playerLoggedInResponse);
     sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(players).build());
     this.boardManager.getPlayersMove().forEach(playerMove -> {
       System.out.println("Send player move: " + playerMove);
@@ -68,6 +78,7 @@ public class GameManager {
 
   public void handleLogoutPlayer(Session session) {
     PlayerLoggedInResponse loggedOutPlayerLoggedInResponse = this.sessionPlayerMap.remove(session);
+    this.playerIdToSessionMap.remove(loggedOutPlayerLoggedInResponse.getPlayerId());
     if (loggedOutPlayerLoggedInResponse != null) {
       PlayerLoggedOutResponse playerLoggedOutResponse = new PlayerLoggedOutResponse(loggedOutPlayerLoggedInResponse.getPlayerId(), loggedOutPlayerLoggedInResponse.getPlayerName());
       System.out.println("Player logged Out: " + playerLoggedOutResponse);

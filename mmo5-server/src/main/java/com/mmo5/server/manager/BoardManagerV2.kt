@@ -18,7 +18,11 @@ class BoardManagerV2(val boardSize: Int = 15, val winSeq: Int = 5) {
     fun getPlayersMove(): List<PlayerMove> {
         val playerMoves = arrayListOf<PlayerMove>()
         for ((x, list) in board.withIndex()) {
-            list.filterNotNull().mapIndexedTo(playerMoves) { y, playerId -> PlayerMove(playerId, Position(x, y)) }
+            for ((y, playerId) in list.withIndex()) {
+                if (playerId != -1) {
+                    playerMoves.add(PlayerMove(playerId, Position(x, y)))
+                }
+            }
         }
         return playerMoves
     }

@@ -1,14 +1,19 @@
 package com.mmo5.server.model.messages;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class PlayerLoggedInRequest {
 
+  private final int playerId;
   private final String playerName;
 
-  public PlayerLoggedInRequest(String playerName) {
+  public PlayerLoggedInRequest(int playerId, String playerName) {
+    this.playerId = playerId;
     this.playerName = playerName;
+  }
+
+  public int getPlayerId() {
+    return playerId;
   }
 
   public String getPlayerName() {
@@ -17,9 +22,7 @@ public class PlayerLoggedInRequest {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-            .add("playerName", playerName)
-            .toString();
+    return super.toString();
   }
 
   @Override
@@ -27,11 +30,12 @@ public class PlayerLoggedInRequest {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     PlayerLoggedInRequest that = (PlayerLoggedInRequest) o;
-    return Objects.equal(playerName, that.playerName);
+    return playerId == that.playerId &&
+            Objects.equal(playerName, that.playerName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(playerName);
+    return Objects.hashCode(playerId, playerName);
   }
 }
