@@ -1,9 +1,9 @@
 package com.mmo5.server.model;
 
 
+import com.google.common.base.MoreObjects;
 import com.mmo5.server.model.messages.PlayerMove;
 import com.mmo5.server.model.messages.Winner;
-import com.google.common.base.MoreObjects;
 
 public class Message {
 
@@ -21,8 +21,8 @@ public class Message {
     this.winner = builder.winner;
   }
 
-  public static Builder newMessage() {
-    return new Builder();
+  public static Builder newMessage(MsgType msgType) {
+    return new Builder(msgType);
   }
 
   public static final class Builder {
@@ -32,16 +32,12 @@ public class Message {
     private PlayerMove playerMove;
     private Winner winner;
 
-    private Builder() {
+    private Builder(MsgType msgType) {
+      this.msgType = msgType;
     }
 
     public Message build() {
       return new Message(this);
-    }
-
-    public Builder msgType(MsgType msgType) {
-      this.msgType = msgType;
-      return this;
     }
 
     public Builder PlayerLoggedIn(com.mmo5.server.model.messages.PlayerLoggedIn PlayerLoggedIn) {

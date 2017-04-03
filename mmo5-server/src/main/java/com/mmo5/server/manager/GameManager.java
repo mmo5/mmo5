@@ -4,7 +4,6 @@ import com.mmo5.server.model.BoardGame;
 import com.mmo5.server.model.Message;
 import com.mmo5.server.model.MsgType;
 import com.mmo5.server.model.messages.PlayerLoggedIn;
-import com.mmo5.server.model.messages.PlayerLoggedOut;
 import com.mmo5.server.model.messages.PlayerMove;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -29,33 +28,35 @@ public class GameManager {
   }
 
   public void handleIncomingMessage(Session session, String jsonMsg) {
-    Message<?> msg = this.gson.fromJson(jsonMsg, Message.class);
+    Message msg = this.gson.fromJson(jsonMsg, Message.class);
     switch (msg.getMsgType()) {
       case PlayerMove:
-        handlePlayerMove((PlayerMove) msg.getData(), session);
+        handlePlayerMove(msg);
         break;
+      default:
+        System.out.println("unhandled message: " + msg);
     }
   }
 
   public void handleLoginPlayer(Session session) {
-    PlayerLoggedIn PlayerLoggedIn = new PlayerLoggedIn(this.playerCounter.incrementAndGet());
-    this.sessionPlayerMap.put(session, PlayerLoggedIn);
-    sendMessage(session, new Message<com.mmo5.server.model.messages.PlayerLoggedIn>(MsgType.PlayerLogin, PlayerLoggedIn));
+    PlayerLoggedIn playerLoggedIn = new PlayerLoggedIn(this.playerCounter.incrementAndGet());
+    this.sessionPlayerMap.put(session, playerLoggedIn);
+    System.out.println("Player logged in: " + playerLoggedIn.getPlayerId());
+    broadcastMessage(Message.newMessage(MsgType.PlayerLoggedIn).PlayerLoggedIn(playerLoggedIn).build());
   }
 
   public void handleLogoutPlayer(Session session) {
     PlayerLoggedIn loggedOutPlayerLoggedIn = this.sessionPlayerMap.remove(session);
-    Message<PlayerLoggedOut> playerLoggedOutMessage = new Message<>(MsgType.PlayerLoggedOut, new PlayerLoggedOut(loggedOutPlayerLoggedIn));
-    broadcastMessage(playerLoggedOutMessage);
+    System.out.println("Player logged Out: " + loggedOutPlayerLoggedIn.getPlayerId());
   }
 
-  private void broadcastMessage(Message<?> message) {
+  private void broadcastMessage(Message message) {
     for (Session playerSession : this.sessionPlayerMap.keySet()) {
       sendMessage(playerSession, message);
     }
   }
 
-  private void sendMessage(Session session, Message<?> message) {
+  private void sendMessage(Session session, Message message) {
     try {
       session.getRemote().sendString(this.gson.toJson(message));
     } catch (IOException e) {
@@ -63,10 +64,8 @@ public class GameManager {
     }
   }
 
-  private void handlePlayerMove(PlayerMove playerMove, Session session) {
-    updateBoardGame(playerMove);
-    Message playerLoggedOutMessage = new Message<>(MsgType.PlayerMove, playerMove);
-    broadcastMessage(playerLoggedOutMessage);
+  private void handlePlayerMove(Message message) {
+    broadcastMessage(message);
   }
 
   private void updateBoardGame(PlayerMove playerMove) {

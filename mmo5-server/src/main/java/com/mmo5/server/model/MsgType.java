@@ -1,10 +1,8 @@
 package com.mmo5.server.model;
 
 public enum MsgType {
-  PlayerLogin,
+  PlayerLoggedIn,
   PlayerLoggedOut,
-  PlayerMove
-
-
-
+  PlayerMove,
+  Winner
 }
