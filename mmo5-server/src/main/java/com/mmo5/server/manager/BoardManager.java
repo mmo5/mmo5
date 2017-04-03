@@ -79,14 +79,12 @@ public class BoardManager {
 
   private List<Position> checkTopRight(int playerId, Position position) {
     List<Position> winPositions = new ArrayList<>(5);
-    winPositions.add(position);
-    for (int i = 1; i < 5; i++) {
-      position.setX(position.getX() + 1);
-      position.setY(position.getY() - 1);
-      if (isNotValidPositionToWin(playerId, position)) {
+    for (int i = 0; i < 5; i++) {
+      Position position1 = new Position(position.getX() + i, position.getY() - i);
+      if (isNotValidPositionToWin(playerId, position1)) {
         return Lists.newArrayList();
       }
-      winPositions.add(position);
+      winPositions.add(position1);
     }
 
     return winPositions;
@@ -94,12 +92,12 @@ public class BoardManager {
 
   private List<Position> checkRight(int playerId, Position position) {
     List<Position> winPositions = new ArrayList<>(5);
-    winPositions.add(position);
-    for (int i = 1; i < 5; i++) {
-      position.setX(position.getX() + 1);
-      if (isNotValidPositionToWin(playerId, position)) {
+    for (int i = 0; i < 5; i++) {
+      Position position1 = new Position(position.getX() + i, position.getY());
+      if (isNotValidPositionToWin(playerId, position1)) {
         return Lists.newArrayList();
       }
+      winPositions.add(position1);
     }
     return winPositions;
   }
@@ -110,25 +108,24 @@ public class BoardManager {
 
   private List<Position> checkBottomRight(int playerId, Position position) {
     List<Position> winPositions = new ArrayList<>(5);
-    winPositions.add(position);
-    for (int i = 1; i < 5; i++) {
-      position.setX(position.getX() + 1);
-      position.setY(position.getY() + 1);
-      if (isNotValidPositionToWin(playerId, position)) {
+    for (int i = 0; i < 5; i++) {
+      Position position1 = new Position(position.getX() + i, position.getY() + i);
+      if (isNotValidPositionToWin(playerId, position1)) {
         return Lists.newArrayList();
       }
+      winPositions.add(position1);
     }
     return winPositions;
   }
 
   private List<Position> checkBottom(int playerId, Position position) {
     List<Position> winPositions = new ArrayList<>(5);
-    winPositions.add(position);
-    for (int i = 1; i < 5; i++) {
-      position.setY(position.getY() + 1);
-      if (isNotValidPositionToWin(playerId, position)) {
+    for (int i = 0; i < 5; i++) {
+      Position position1 = new Position(position.getX(), position.getY() + i);
+      if (isNotValidPositionToWin(playerId, position1)) {
         return Lists.newArrayList();
       }
+      winPositions.add(position1);
     }
     return winPositions;
   }
