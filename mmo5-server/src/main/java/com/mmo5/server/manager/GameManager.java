@@ -60,7 +60,7 @@ public class GameManager {
       }
       playerLoggedInResponse = new PlayerLoggedInResponse(playerId, playerLoggedInRequest.getPlayerName());
     } else {
-      while (!this.playerIdToSessionMap.containsKey(this.playerCounter.incrementAndGet()));
+      while (this.playerIdToSessionMap.containsKey(this.playerCounter.incrementAndGet()));
       playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.get(), playerLoggedInRequest.getPlayerName());
     }
     Map<Integer, String> players = getPlayers();
