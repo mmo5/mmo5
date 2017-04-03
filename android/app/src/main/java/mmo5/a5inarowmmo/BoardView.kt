@@ -37,6 +37,12 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
+
+        val matrixLocationByXy = boardModel.getMatrixLocationByXy(x, y)
+        if (matrixLocationByXy.first < 0 || matrixLocationByXy.first >= boardModel.numOfCells ||
+                matrixLocationByXy.second < 0 || matrixLocationByXy.second >= boardModel.numOfCells) {
+            return true
+        }
         mainActivity.sendTouch(boardModel.getMatrixLocationByXy(x, y))
         return super.onTouchEvent(event)
     }

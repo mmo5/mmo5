@@ -8,6 +8,7 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
         require(width >= numOfCells)
         require(height >= numOfCells)
     }
+
     private val roundedHeight = height - height.rem(numOfCells)
     private val roundedWidth = width - width.rem(numOfCells)
     private val isXBigger = roundedHeight < roundedWidth
@@ -18,7 +19,11 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
     private val boxSizeIncludeTopLeftLines = (sizeAfterMarginReduction / numOfCells)
     private val rectangles: MutableList<MutableList<RectangleHolder>> =
             (1..numOfCells).map {
-                (1..numOfCells).map { RectangleHolder(rect = Rectangle(0, 0, 0, 0), color = 0xFFFFFFFF.toInt() /**WHITE**/) }
+                (1..numOfCells).map {
+                    RectangleHolder(rect = Rectangle(0, 0, 0, 0), color = 0xFFFFFFFF.toInt()
+                            /**WHITE**/
+                    )
+                }
                         .toMutableList()
             }.toMutableList()
 
@@ -75,7 +80,7 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
             rightX = x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
             bottomY = y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
 
-    object NullObject: BoardToViewModel(height = 1, width = 1, numOfCells = 1, margin = 0)
+    object NullObject : BoardToViewModel(height = 1, width = 1, numOfCells = 1, margin = 0)
 }
 
 data class Rectangle(val leftX: Int, val topY: Int, val rightX: Int, val bottomY: Int)
