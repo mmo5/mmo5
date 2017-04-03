@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">5 In a row MMO</string>
+    <string name="log_in">Log In</string>
+    <string name="enter_user_name">Enter user name</string>
+    <string name="_5_in_a_row">5 in a row</string>
+    <string name="login">Login</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_login2">Log in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
