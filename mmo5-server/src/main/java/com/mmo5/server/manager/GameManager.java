@@ -1,5 +1,7 @@
 package com.mmo5.server.manager;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mmo5.server.model.Message;
@@ -9,6 +11,7 @@ import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -18,6 +21,10 @@ public class GameManager {
   private final AtomicInteger playerCounter;
   private final Map<Session, PlayerLoggedInResponse> sessionPlayerMap;
   private final BoardManager boardManager;
+  private final Cache<Integer, String> playerMoveCache = CacheBuilder.newBuilder()
+          .maximumSize(200)
+          .expireAfterWrite(1, TimeUnit.SECONDS)
+          .build();
 
   public GameManager() {
     this.sessionPlayerMap = Maps.newConcurrentMap();
@@ -62,19 +69,24 @@ public class GameManager {
 
   private void handlePlayerMove(Message message) {
     PlayerMove playerMove = message.getPlayerMove();
-    synchronized (this.boardManager) {
-      boolean isUpdated = this.boardManager.updatePlayerMove(playerMove);
-      if (isUpdated) {
-        broadcastMessage(message);
-        Winner winner = this.boardManager.checkWinner();
-        if (winner != null) {
-          System.out.println("Player: " + playerMove.getPlayerId() + " Won!!");
-          broadcastMessage(Message.newMessage(MsgType.Winner).winner(winner).players(getPlayers()).build());
-          this.boardManager.initBoard();
+    if (this.playerMoveCache.getIfPresent(playerMove.getPlayerId()) == null) {
+      this.playerMoveCache.put(playerMove.getPlayerId(), "");
+      synchronized (this.boardManager) {
+        boolean isUpdated = this.boardManager.updatePlayerMove(playerMove);
+        if (isUpdated) {
+          broadcastMessage(message);
+          Winner winner = this.boardManager.checkWinner();
+          if (winner != null) {
+            System.out.println("Player: " + playerMove.getPlayerId() + " Won!!");
+            broadcastMessage(Message.newMessage(MsgType.Winner).winner(winner).players(getPlayers()).build());
+            this.boardManager.initBoard();
+          }
+        } else {
+          System.out.println("Ignore player move: " + playerMove);
         }
-      } else {
-        System.out.println("Ignore player move: " + playerMove);
       }
+    } else {
+      System.out.println("Throttled player move: " + playerMove);
     }
   }
 
