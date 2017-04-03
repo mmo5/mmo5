@@ -3,7 +3,7 @@ package model;
 import com.google.common.collect.Sets;
 import com.mmo5.server.manager.BoardManager;
 import com.mmo5.server.model.messages.PlayerMove;
-import com.mmo5.server.model.messages.Position;
+import com.mmo5.server.model.Position;
 import com.mmo5.server.model.messages.Winner;
 import org.junit.Assert;
 import org.junit.Test;

@@ -3,7 +3,7 @@ package com.mmo5.server.manager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mmo5.server.model.messages.PlayerMove;
-import com.mmo5.server.model.messages.Position;
+import com.mmo5.server.model.Position;
 import com.mmo5.server.model.messages.Winner;
 
 import java.util.ArrayList;

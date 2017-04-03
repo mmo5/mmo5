@@ -1,23 +1,22 @@
 package com.mmo5.server.manager;
 
-import com.mmo5.server.model.Message;
-import com.mmo5.server.model.MsgType;
-import com.mmo5.server.model.messages.PlayerLoggedIn;
-import com.mmo5.server.model.messages.PlayerMove;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
-import com.mmo5.server.model.messages.Winner;
+import com.mmo5.server.model.Message;
+import com.mmo5.server.model.MsgType;
+import com.mmo5.server.model.messages.*;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class GameManager {
 
   private final Gson gson;
   private final AtomicInteger playerCounter;
-  private final Map<Session, PlayerLoggedIn> sessionPlayerMap;
+  private final Map<Session, PlayerLoggedInResponse> sessionPlayerMap;
   private final BoardManager boardManager;
 
   public GameManager() {
@@ -31,6 +30,9 @@ public class GameManager {
     System.out.println("handling incoming message: " + jsonMsg);
     Message msg = this.gson.fromJson(jsonMsg, Message.class);
     switch (msg.getMsgType()) {
+      case PlayerLoggedInRequest:
+        handlePlayerLoggedInRequestMsg(session, msg);
+        break;
       case PlayerMove:
         handlePlayerMove(msg);
         break;
@@ -39,18 +41,24 @@ public class GameManager {
     }
   }
 
+  public void handlePlayerLoggedInRequestMsg(Session session, Message msg) {
+    PlayerLoggedInRequest playerLoggedInRequest = msg.getPlayerLoggedInRequest();
+    PlayerLoggedInResponse playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.incrementAndGet(), playerLoggedInRequest.getPlayerName());
+    this.sessionPlayerMap.put(session, playerLoggedInResponse);
+    System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId());
+    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInRequest).players(getPlayers()).build());
+  }
+
   public void handleLoginPlayer(Session session) {
-    PlayerLoggedIn playerLoggedIn = new PlayerLoggedIn(this.playerCounter.incrementAndGet());
-    this.sessionPlayerMap.put(session, playerLoggedIn);
-    System.out.println("Player logged in: " + playerLoggedIn.getPlayerId());
-    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedIn).playerLoggedIn(playerLoggedIn).build());
+    System.out.println("Client Connected.");
   }
 
   public void handleLogoutPlayer(Session session) {
-    PlayerLoggedIn loggedOutPlayerLoggedIn = this.sessionPlayerMap.remove(session);
-    System.out.println("Player logged Out: " + loggedOutPlayerLoggedIn.getPlayerId());
+    PlayerLoggedInResponse loggedOutPlayerLoggedInResponse = this.sessionPlayerMap.remove(session);
+    PlayerLoggedOutResponse playerLoggedOutResponse = new PlayerLoggedOutResponse(loggedOutPlayerLoggedInResponse.getPlayerId(), loggedOutPlayerLoggedInResponse.getPlayerName());
+    System.out.println("Player logged Out: " + playerLoggedOutResponse);
+    broadcastMessage(Message.newMessage(MsgType.PlayerLoggedOutResponse).playerLoggedOutResponse(playerLoggedOutResponse).players(getPlayers()).build());
   }
-
 
   private void handlePlayerMove(Message message) {
     PlayerMove playerMove = message.getPlayerMove();
@@ -61,7 +69,7 @@ public class GameManager {
         Winner winner = this.boardManager.checkWinner();
         if (winner != null) {
           System.out.println("Player: " + playerMove.getPlayerId() + " Won!!");
-          broadcastMessage(Message.newMessage(MsgType.Winner).winner(winner).build());
+          broadcastMessage(Message.newMessage(MsgType.Winner).winner(winner).players(getPlayers()).build());
           this.boardManager.initBoard();
         }
       } else {
@@ -83,5 +91,9 @@ public class GameManager {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  private Map<Integer, String> getPlayers() {
+    return this.sessionPlayerMap.values().stream().collect(Collectors.toMap(PlayerLoggedInResponse::getPlayerId, PlayerLoggedInResponse::getPlayerName));
   }
 }

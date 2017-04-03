@@ -1,4 +1,4 @@
-package com.mmo5.server.model.messages;
+package com.mmo5.server.model;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;

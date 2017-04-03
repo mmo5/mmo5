@@ -2,6 +2,7 @@ package com.mmo5.server.model.messages;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.mmo5.server.model.Position;
 
 import java.util.List;
 

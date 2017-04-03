@@ -1,26 +1,28 @@
 package com.mmo5.server.model;
 
 
-import com.google.common.base.MoreObjects;
-import com.mmo5.server.model.messages.PlayerLoggedIn;
-import com.mmo5.server.model.messages.PlayerLoggedOut;
-import com.mmo5.server.model.messages.PlayerMove;
-import com.mmo5.server.model.messages.Winner;
+import com.mmo5.server.model.messages.*;
+
+import java.util.Map;
 
 public class Message {
 
   private final MsgType msgType;
-  private final PlayerLoggedIn playerLoggedIn;
-  private final PlayerLoggedOut playerLoggedOut;
+  private final PlayerLoggedInResponse playerLoggedInResponse;
+  private final PlayerLoggedInRequest playerLoggedInRequest;
+  private final PlayerLoggedOutResponse playerLoggedOutResponse;
   private final PlayerMove playerMove;
   private final Winner winner;
+  private final Map<Integer, String> players;
 
   private Message(Builder builder) {
     this.msgType = builder.msgType;
-    this.playerLoggedIn = builder.playerLoggedIn;
-    this.playerLoggedOut = builder.playerLoggedOut;
+    this.playerLoggedInResponse = builder.playerLoggedInResponse;
+    this.playerLoggedInRequest = builder.playerLoggedInRequest;
     this.playerMove = builder.playerMove;
     this.winner = builder.winner;
+    this.players = builder.players;
+    this.playerLoggedOutResponse = builder.playerLoggedOutResponse;
   }
 
   public static Builder newMessage(MsgType msgType) {
@@ -29,10 +31,12 @@ public class Message {
 
   public static final class Builder {
     private MsgType msgType;
-    private PlayerLoggedIn playerLoggedIn;
-    private PlayerLoggedOut playerLoggedOut;
+    private PlayerLoggedInResponse playerLoggedInResponse;
+    private PlayerLoggedInRequest playerLoggedInRequest;
+    private PlayerLoggedOutResponse playerLoggedOutResponse;
     private PlayerMove playerMove;
     private Winner winner;
+    private Map<Integer, String> players;
 
     private Builder(MsgType msgType) {
       this.msgType = msgType;
@@ -42,13 +46,13 @@ public class Message {
       return new Message(this);
     }
 
-    public Builder playerLoggedIn(PlayerLoggedIn playerLoggedIn) {
-      this.playerLoggedIn = playerLoggedIn;
+    public Builder playerLoggedInRequest(PlayerLoggedInResponse playerLoggedInResponse) {
+      this.playerLoggedInResponse = playerLoggedInResponse;
       return this;
     }
 
-    public Builder playerLoggedOut(PlayerLoggedOut playerLoggedOut) {
-      this.playerLoggedOut = playerLoggedOut;
+    public Builder playerLoggedInResponse(PlayerLoggedInRequest playerLoggedInRequest) {
+      this.playerLoggedInRequest = playerLoggedInRequest;
       return this;
     }
 
@@ -61,18 +65,28 @@ public class Message {
       this.winner = winner;
       return this;
     }
+
+    public Builder players(Map<Integer, String> players) {
+      this.players = players;
+      return this;
+    }
+
+    public Builder playerLoggedOutResponse(PlayerLoggedOutResponse playerLoggedOutResponse) {
+      this.playerLoggedOutResponse = playerLoggedOutResponse;
+      return this;
+    }
   }
 
   public MsgType getMsgType() {
     return msgType;
   }
 
-  public PlayerLoggedIn getPlayerLoggedIn() {
-    return playerLoggedIn;
+  public PlayerLoggedInResponse getPlayerLoggedInResponse() {
+    return playerLoggedInResponse;
   }
 
-  public PlayerLoggedOut getPlayerLoggedOut() {
-    return playerLoggedOut;
+  public PlayerLoggedInRequest getPlayerLoggedInRequest() {
+    return playerLoggedInRequest;
   }
 
   public PlayerMove getPlayerMove() {
@@ -83,14 +97,7 @@ public class Message {
     return winner;
   }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-            .add("msgType", msgType)
-            .add("playerLoggedIn", playerLoggedIn)
-            .add("playerLoggedOut", playerLoggedOut)
-            .add("playerMove", playerMove)
-            .add("winner", winner)
-            .toString();
+  public Map<Integer, String> getPlayers() {
+    return players;
   }
 }
