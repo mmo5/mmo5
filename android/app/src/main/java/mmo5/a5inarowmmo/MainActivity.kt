@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     playerId = message.playerLoggedInResponse?.playerId ?: throw IllegalArgumentException("malformed message $message")
                     logger.info("setting player id to $playerId")
+                    boardView.boardLocked = false
                 }
                 MsgType.PlayerMove ->
                     runOnUiThread { boardView.setRectByIndex(message?.playerMove ?: throw IllegalArgumentException("malformed message $message")) }

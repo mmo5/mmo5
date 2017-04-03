@@ -18,7 +18,7 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
     private val paint: Paint = Paint()
     private val playersColors = listOf(BLUE, RED, CYAN, YELLOW)
     private var boardModel: BoardToViewModel = BoardToViewModel.NullObject
-    var boardLocked = false
+    var boardLocked = true
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
