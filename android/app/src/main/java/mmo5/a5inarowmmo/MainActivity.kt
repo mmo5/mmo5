@@ -11,7 +11,8 @@ class MainActivity : AppCompatActivity() {
         val b = BoardView(this)
         setContentView(b)
         MessagesClient().connectWebSocket {
-            message -> Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            message ->
+            runOnUiThread { Toast.makeText(this, message, Toast.LENGTH_LONG).show() }
         }
     }
 }

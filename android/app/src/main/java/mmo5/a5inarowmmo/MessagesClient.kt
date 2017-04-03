@@ -3,9 +3,11 @@ package mmo5.a5inarowmmo
 import android.os.Build
 import mu.KotlinLogging
 import org.java_websocket.client.WebSocketClient
+import org.java_websocket.drafts.Draft_17
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.net.URISyntaxException
+import javax.net.ssl.SSLSocketFactory
 
 
 class MessagesClient() {
@@ -21,7 +23,7 @@ class MessagesClient() {
             return
         }
 
-        val mWebSocketClient = object : WebSocketClient(uri) {
+        val webSocketClient = object : WebSocketClient(uri, Draft_17()) {
             override fun onOpen(serverHandshake: ServerHandshake) {
                 logger.info("Websocket Opened")
                 this.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL)
@@ -44,7 +46,11 @@ class MessagesClient() {
             override fun onError(e: Exception) {
                 logger.info("Websocket Error ", e)
             }
+
+            init {
+            }
         }
-        mWebSocketClient.connect()
+//        webSocketClient.setSocket(SSLSocketFactory.getDefault().createSocket(uri.host, 443))
+        webSocketClient.connect()
     }
 }
