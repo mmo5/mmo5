@@ -68,7 +68,7 @@ public class BoardManager {
           positions.addAll(checkBottomRight(playerId, new Position(i, j)));
           positions.addAll(checkBottom(playerId, new Position(i, j)));
           ArrayList<Position> winnerPositions = Lists.newArrayList(positions);
-          if (winnerPositions.size() > 5) {
+          if (winnerPositions.size() >= 5) {
             return new Winner(playerId, winnerPositions);
           }
         }

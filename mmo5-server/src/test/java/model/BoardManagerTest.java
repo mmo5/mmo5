@@ -1,6 +1,5 @@
 package model;
 
-import com.google.common.collect.Lists;
 import com.mmo5.server.manager.BoardManager;
 import com.mmo5.server.model.messages.PlayerMove;
 import com.mmo5.server.model.messages.Position;
@@ -26,7 +25,7 @@ public class BoardManagerTest {
     boardManager.updatePlayerMove(playerMove5);
 
     final Winner winnerBeforeUpdate = boardManager.checkWinner();
-    Assert.assertEquals(Lists.newArrayList(), winnerBeforeUpdate.getPositions());
+    Assert.assertNull(winnerBeforeUpdate);
 
     PlayerMove playerMove3 = new PlayerMove(1, new Position(2,4));
     boardManager.updatePlayerMove(playerMove3);
@@ -48,7 +47,7 @@ public class BoardManagerTest {
     boardManager.updatePlayerMove(playerMove5);
 
     final Winner winnerBeforeUpdate = boardManager.checkWinner();
-    Assert.assertEquals(Lists.newArrayList(), winnerBeforeUpdate.getPositions());
+    Assert.assertNull(winnerBeforeUpdate);
 
     PlayerMove playerMove3 = new PlayerMove(1, new Position(4,13));
     boardManager.updatePlayerMove(playerMove3);
@@ -70,7 +69,7 @@ public class BoardManagerTest {
     boardManager.updatePlayerMove(playerMove5);
 
     final Winner winnerBeforeUpdate = boardManager.checkWinner();
-    Assert.assertEquals(Lists.newArrayList(), winnerBeforeUpdate.getPositions());
+    Assert.assertNull(winnerBeforeUpdate);
 
     PlayerMove playerMove3 = new PlayerMove(1, new Position(3,7));
     boardManager.updatePlayerMove(playerMove3);
