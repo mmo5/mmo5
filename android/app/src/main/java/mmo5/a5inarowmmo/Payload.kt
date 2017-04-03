@@ -11,6 +11,7 @@ data class Message(val msgType: MsgType,
 enum class MsgType {
     PlayerLoggedInRequest,
     PlayerLoggedInResponse,
+    PlayerLoggedOutResponse,
     PlayerMove,
     Winner
 }
