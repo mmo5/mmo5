@@ -2,21 +2,23 @@ package com.mmo5.server.model;
 
 
 import com.google.common.base.MoreObjects;
+import com.mmo5.server.model.messages.PlayerLoggedIn;
+import com.mmo5.server.model.messages.PlayerLoggedOut;
 import com.mmo5.server.model.messages.PlayerMove;
 import com.mmo5.server.model.messages.Winner;
 
 public class Message {
 
   private final MsgType msgType;
-  private final com.mmo5.server.model.messages.PlayerLoggedIn PlayerLoggedIn;
-  private final com.mmo5.server.model.messages.PlayerLoggedOut PlayerLoggedOut;
+  private final PlayerLoggedIn playerLoggedIn;
+  private final PlayerLoggedOut playerLoggedOut;
   private final PlayerMove playerMove;
   private final Winner winner;
 
   private Message(Builder builder) {
     this.msgType = builder.msgType;
-    this.PlayerLoggedIn = builder.PlayerLoggedIn;
-    this.PlayerLoggedOut = builder.PlayerLoggedOut;
+    this.playerLoggedIn = builder.playerLoggedIn;
+    this.playerLoggedOut = builder.playerLoggedOut;
     this.playerMove = builder.playerMove;
     this.winner = builder.winner;
   }
@@ -27,8 +29,8 @@ public class Message {
 
   public static final class Builder {
     private MsgType msgType;
-    private com.mmo5.server.model.messages.PlayerLoggedIn PlayerLoggedIn;
-    private com.mmo5.server.model.messages.PlayerLoggedOut PlayerLoggedOut;
+    private PlayerLoggedIn playerLoggedIn;
+    private PlayerLoggedOut playerLoggedOut;
     private PlayerMove playerMove;
     private Winner winner;
 
@@ -40,13 +42,13 @@ public class Message {
       return new Message(this);
     }
 
-    public Builder PlayerLoggedIn(com.mmo5.server.model.messages.PlayerLoggedIn PlayerLoggedIn) {
-      this.PlayerLoggedIn = PlayerLoggedIn;
+    public Builder PlayerLoggedIn(PlayerLoggedIn PlayerLoggedIn) {
+      this.playerLoggedIn = PlayerLoggedIn;
       return this;
     }
 
-    public Builder PlayerLoggedOut(com.mmo5.server.model.messages.PlayerLoggedOut PlayerLoggedOut) {
-      this.PlayerLoggedOut = PlayerLoggedOut;
+    public Builder PlayerLoggedOut(PlayerLoggedOut PlayerLoggedOut) {
+      this.playerLoggedOut = PlayerLoggedOut;
       return this;
     }
 
@@ -65,12 +67,12 @@ public class Message {
     return msgType;
   }
 
-  public com.mmo5.server.model.messages.PlayerLoggedIn getPlayerLoggedIn() {
-    return PlayerLoggedIn;
+  public PlayerLoggedIn getPlayerLoggedIn() {
+    return playerLoggedIn;
   }
 
-  public com.mmo5.server.model.messages.PlayerLoggedOut getPlayerLoggedOut() {
-    return PlayerLoggedOut;
+  public PlayerLoggedOut getPlayerLoggedOut() {
+    return playerLoggedOut;
   }
 
   public PlayerMove getPlayerMove() {
@@ -85,8 +87,8 @@ public class Message {
   public String toString() {
     return MoreObjects.toStringHelper(this)
             .add("msgType", msgType)
-            .add("PlayerLoggedIn", PlayerLoggedIn)
-            .add("PlayerLoggedOut", PlayerLoggedOut)
+            .add("playerLoggedIn", playerLoggedIn)
+            .add("playerLoggedOut", playerLoggedOut)
             .add("playerMove", playerMove)
             .add("winner", winner)
             .toString();

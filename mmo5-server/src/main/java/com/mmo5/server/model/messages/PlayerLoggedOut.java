@@ -19,8 +19,8 @@ public class PlayerLoggedOut {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    PlayerLoggedOut PlayerLoggedOut = (com.mmo5.server.model.messages.PlayerLoggedOut) o;
-    return playerId == PlayerLoggedOut.playerId;
+    PlayerLoggedOut playerLoggedOut = (PlayerLoggedOut) o;
+    return playerId == playerLoggedOut.playerId;
   }
 
   @Override
