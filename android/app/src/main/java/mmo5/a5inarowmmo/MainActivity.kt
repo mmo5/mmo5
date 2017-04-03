@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
                 MsgType.Winner -> {
                     runOnUiThread { boardView.announceWinner(message.winner!!) }
                     runOnUiThread {
+                        logger.info("other player won? ${message.winner?.playerId} ?= $playerId")
                         var winNotice = "You Loose :-("
                         if (message.winner?.playerId == playerId) {
                             winNotice = "You won!!!"
