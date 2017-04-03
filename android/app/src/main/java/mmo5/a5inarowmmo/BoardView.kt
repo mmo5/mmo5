@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
-
+import android.os.Handler
 
 
 class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
@@ -68,11 +68,15 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
     }
 
     fun announceWinner(winner: Winner) {
-//        winner.positions.forEach {
-//            boardModel.setRectByIndex(Pair(it.x, it.y), Color.GREEN)
-//        }
-        boardModel.resetMoves()
+        winner.positions?.forEach {
+            boardModel.setRectByIndex(Pair(it.x, it.y), Color.GREEN)
+        }
         invalidate()
+        val handler = Handler()
+        handler.postDelayed({
+            boardModel.resetMoves()
+            invalidate()
+        }, 4000)
     }
 }
 
