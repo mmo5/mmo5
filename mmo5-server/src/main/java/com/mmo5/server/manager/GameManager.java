@@ -29,6 +29,7 @@ public class GameManager {
   }
 
   public void handleIncomingMessage(Session session, String jsonMsg) {
+    System.out.println("handling incoming message: " + jsonMsg);
     Message msg = this.gson.fromJson(jsonMsg, Message.class);
     switch (msg.getMsgType()) {
       case PlayerMove:
@@ -60,13 +61,18 @@ public class GameManager {
         broadcastMessage(message);
         Winner winner = this.board.checkWinner();
         if (winner != null) {
-          Message.newMessage(MsgType.Winner).winner(winner).build();
+          System.out.println("Player: " + playerMove.getPlayerId() + " Won!!");
+          broadcastMessage(Message.newMessage(MsgType.Winner).winner(winner).build());
+          this.board.initBoard();
         }
+      } else {
+        System.out.println("Ignore player move: " + playerMove);
       }
     }
   }
 
   private void broadcastMessage(Message message) {
+    System.out.println("Sending Msg to all players: " + message);
     for (Session playerSession : this.sessionPlayerMap.keySet()) {
       sendMessage(playerSession, message);
     }
