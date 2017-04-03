@@ -59,27 +59,25 @@ public class BoardManager {
   }
 
   public Winner checkWinner() {
-    Set<Position> allWinnerPositions = Sets.newHashSet();
+    Set<Position> winnerPositions = Sets.newHashSet();
     int winnerId = NO_WINNER;
 
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
         Integer playerId = board[i][j];
         if (playerId != null) {
-          Set<Position> winnerPositions = Sets.newHashSet();
           winnerPositions.addAll(checkTopRight(playerId, new Position(i, j)));
           winnerPositions.addAll(checkRight(playerId, new Position(i, j)));
           winnerPositions.addAll(checkBottomRight(playerId, new Position(i, j)));
           winnerPositions.addAll(checkBottom(playerId, new Position(i, j)));
           if (winnerPositions.size() >= 5) {
             winnerId = playerId;
-            allWinnerPositions.addAll(winnerPositions);
           }
         }
       }
     }
 
-    return winnerId == NO_WINNER ? null : new Winner(winnerId, Lists.newArrayList(allWinnerPositions));
+    return winnerId == NO_WINNER ? null : new Winner(winnerId, Lists.newArrayList(winnerPositions));
   }
 
   private List<Position> checkTopRight(int playerId, Position position) {

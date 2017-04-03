@@ -53,7 +53,10 @@ public class GameManager {
     PlayerLoggedInResponse playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.incrementAndGet(), playerLoggedInRequest.getPlayerName());
     this.sessionPlayerMap.put(session, playerLoggedInResponse);
     System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId() + ", Message: " + playerLoggedInResponse);
-    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(getPlayers()).build());
+    Map<Integer, String> players = getPlayers();
+    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(players).build());
+    this.boardManager.getPlayersMove().forEach(playerMove -> sendMessage(session, Message.newMessage(MsgType.PlayerMove).playerMove(playerMove).players(players).build()));
+
   }
 
   public void handleLoginPlayer(Session session) {
