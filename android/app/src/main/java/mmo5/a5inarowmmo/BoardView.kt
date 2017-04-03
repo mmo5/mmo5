@@ -1,17 +1,17 @@
 package mmo5.a5inarowmmo
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Color.*
 import android.graphics.Paint
 import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
-import java.util.*
 
-class BoardView(context: Context) : View(context) {
+class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
 
     private val paint: Paint = Paint()
+    private val playersColors = listOf(BLUE, RED, CYAN, YELLOW)
     private var boardModel: BoardToViewModel = BoardToViewModel.NullObject
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -37,10 +37,15 @@ class BoardView(context: Context) : View(context) {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
-        boardModel.setRectByXy(x, y, Random().nextInt())
-        invalidate()
+        mainActivity.sendTouch(boardModel.getMatrixLocationByXy(x, y))
         return super.onTouchEvent(event)
+    }
+
+    fun setRectByIndex(playerMove: PlayerMove) {
+        boardModel.setRectByIndex(Pair(playerMove.position.x, playerMove.position.y),
+                playersColors[playerMove.playerId.rem(playersColors.size)])
+        invalidate()
     }
 }
 
-private fun  Rectangle.toRect(): Rect = Rect(this.leftX, this.topY, this.rightX, this.bottomY)
+private fun Rectangle.toRect(): Rect = Rect(this.leftX, this.topY, this.rightX, this.bottomY)

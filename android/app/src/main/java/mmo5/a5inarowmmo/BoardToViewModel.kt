@@ -52,6 +52,10 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
 
     fun setRectByXy(x: Float, y: Float, color: Int): Unit {
         val cellIndex = getMatrixLocationByXy(x, y)
+        setRectByIndex(cellIndex, color)
+    }
+
+    fun setRectByIndex(cellIndex: Pair<Int, Int>, color: Int) {
         if (cellIndex.first < 0 || cellIndex.first >= numOfCells ||
                 cellIndex.second < 0 || cellIndex.second >= numOfCells) {
             return
