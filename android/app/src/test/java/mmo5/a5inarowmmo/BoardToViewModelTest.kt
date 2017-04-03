@@ -1,7 +1,6 @@
 package mmo5.a5inarowmmo
 
-import android.graphics.Rect
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class BoardToViewModelTest {
@@ -73,9 +72,6 @@ class BoardToViewModelTest {
     @Test fun `getRectFromIndex`() {
         val tested = BoardToViewModel(100, 100, 2, 0)
         val rect = tested.getRectFromIndex(0, 0)
-        assertEquals(Rect(1, 1, 99, 99).bottom, rect.bottom)
-        assertEquals(Rect(1, 1, 99, 99).top, rect.top)
-        assertEquals(Rect(1, 1, 99, 99).left, rect.left)
-        assertEquals(Rect(1, 1, 99, 99).right, rect.right)
+        assertEquals(Rectangle(0, 0, 50, 50), rect)
     }
 }

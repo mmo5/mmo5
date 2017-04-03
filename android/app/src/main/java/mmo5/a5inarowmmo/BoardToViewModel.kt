@@ -1,8 +1,5 @@
 package mmo5.a5inarowmmo
 
-import android.graphics.Color
-import android.graphics.Rect
-
 
 open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin: Int) {
     init {
@@ -21,7 +18,7 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
     private val boxSizeIncludeTopLeftLines = (sizeAfterMarginReduction / numOfCells)
     private val rectangles: MutableList<MutableList<RectangleHolder>> =
             (1..numOfCells).map {
-                (1..numOfCells).map { RectangleHolder(rect = Rect(0, 0, 0, 0), color = Color.WHITE) }
+                (1..numOfCells).map { RectangleHolder(rect = Rectangle(0, 0, 0, 0), color = 0xFFFFFFFF.toInt() /**WHITE**/) }
                         .toMutableList()
             }.toMutableList()
 
@@ -68,14 +65,15 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
         return Pair(resX.toInt(), resY.toInt())
     }
 
-    fun getRectFromIndex(x: Int, y: Int): Rect = Rect(
-            x * boxSizeIncludeTopLeftLines + marginX,
-            y * boxSizeIncludeTopLeftLines + marginY,
-            x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
-            y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
+    fun getRectFromIndex(x: Int, y: Int): Rectangle = Rectangle(
+            leftX = x * boxSizeIncludeTopLeftLines + marginX,
+            topY = y * boxSizeIncludeTopLeftLines + marginY,
+            rightX = x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
+            bottomY = y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
 
     object NullObject: BoardToViewModel(height = 0, width = 0, numOfCells = 1, margin = 0)
 }
 
-data class RectangleHolder(val rect: Rect, val color: Int)
+data class Rectangle(val leftX: Int, val topY: Int, val rightX: Int, val bottomY: Int)
+data class RectangleHolder(val rect: Rectangle, val color: Int)
 data class ViewLine(val startX: Float, val startY: Float, val endX: Float, val endY: Float)
