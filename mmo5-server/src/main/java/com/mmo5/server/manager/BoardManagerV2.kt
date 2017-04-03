@@ -52,7 +52,7 @@ class BoardManagerV2(val boardSize: Int = 15, val winSeq: Int = 5) {
                     winnerPositions.addAll(checkRight(playerId, currentPosition, listOf(currentPosition)))
                     winnerPositions.addAll(checkBottomRight(playerId, currentPosition, listOf(currentPosition)))
                     winnerPositions.addAll(checkBottom(playerId, currentPosition, listOf(currentPosition)))
-                    if (!winnerPositions.isEmpty()) {
+                    if (!winnerPositions.isEmpty() && winnerId == NO_WINNER) {
                         winnerId = playerId
                     }
                 }

@@ -88,4 +88,12 @@ class BoardManagerV2Test {
         val winner = tested.checkWinner()
         validateWinner(setOf(Position(0, 0), Position(1, 0), Position(0, 1)), winner)
     }
+    @Test fun `validate winner with another player - was a bug`() {
+        val tested = BoardManagerV2(boardSize = 3, winSeq = 2)
+        tested.updatePlayerMove(PlayerMove(1, Position(0, 0)))
+        tested.updatePlayerMove(PlayerMove(1, Position(1, 0)))
+        tested.updatePlayerMove(PlayerMove(2, Position(1, 1)))
+        val winner = tested.checkWinner()
+        validateWinner(setOf(Position(0, 0), Position(1, 0)), winner)
+    }
 }
