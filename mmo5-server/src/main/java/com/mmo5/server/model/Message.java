@@ -1,6 +1,7 @@
 package com.mmo5.server.model;
 
 
+import com.google.common.base.MoreObjects;
 import com.mmo5.server.model.messages.*;
 
 import java.util.Map;
@@ -47,12 +48,12 @@ public class Message {
     }
 
     public Builder playerLoggedInRequest(PlayerLoggedInResponse playerLoggedInResponse) {
-      this.playerLoggedInResponse = playerLoggedInResponse;
+      this.playerLoggedInRequest = playerLoggedInRequest;
       return this;
     }
 
-    public Builder playerLoggedInResponse(PlayerLoggedInRequest playerLoggedInRequest) {
-      this.playerLoggedInRequest = playerLoggedInRequest;
+    public Builder playerLoggedInResponse(PlayerLoggedInResponse playerLoggedInResponse) {
+      this.playerLoggedInResponse = playerLoggedInResponse;
       return this;
     }
 
@@ -99,5 +100,18 @@ public class Message {
 
   public Map<Integer, String> getPlayers() {
     return players;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+            .add("msgType", msgType)
+            .add("playerLoggedInResponse", playerLoggedInResponse)
+            .add("playerLoggedInRequest", playerLoggedInRequest)
+            .add("playerLoggedOutResponse", playerLoggedOutResponse)
+            .add("playerMove", playerMove)
+            .add("winner", winner)
+            .add("players", players)
+            .toString();
   }
 }

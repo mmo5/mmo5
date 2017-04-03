@@ -53,7 +53,7 @@ public class GameManager {
     PlayerLoggedInResponse playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.incrementAndGet(), playerLoggedInRequest.getPlayerName());
     this.sessionPlayerMap.put(session, playerLoggedInResponse);
     System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId());
-    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInRequest).players(getPlayers()).build());
+    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(getPlayers()).build());
   }
 
   public void handleLoginPlayer(Session session) {
@@ -62,9 +62,11 @@ public class GameManager {
 
   public void handleLogoutPlayer(Session session) {
     PlayerLoggedInResponse loggedOutPlayerLoggedInResponse = this.sessionPlayerMap.remove(session);
-    PlayerLoggedOutResponse playerLoggedOutResponse = new PlayerLoggedOutResponse(loggedOutPlayerLoggedInResponse.getPlayerId(), loggedOutPlayerLoggedInResponse.getPlayerName());
-    System.out.println("Player logged Out: " + playerLoggedOutResponse);
-    broadcastMessage(Message.newMessage(MsgType.PlayerLoggedOutResponse).playerLoggedOutResponse(playerLoggedOutResponse).players(getPlayers()).build());
+    if (loggedOutPlayerLoggedInResponse != null) {
+      PlayerLoggedOutResponse playerLoggedOutResponse = new PlayerLoggedOutResponse(loggedOutPlayerLoggedInResponse.getPlayerId(), loggedOutPlayerLoggedInResponse.getPlayerName());
+      System.out.println("Player logged Out: " + playerLoggedOutResponse);
+      broadcastMessage(Message.newMessage(MsgType.PlayerLoggedOutResponse).playerLoggedOutResponse(playerLoggedOutResponse).players(getPlayers()).build());
+    }
   }
 
   private void handlePlayerMove(Message message) {
