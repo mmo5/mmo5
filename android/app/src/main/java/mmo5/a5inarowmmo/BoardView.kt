@@ -12,22 +12,22 @@ import java.util.*
 class BoardView(context: Context) : View(context) {
 
     private val paint: Paint = Paint()
-    private var boardModel: BoardToViewModel? = null
+    private var boardModel: BoardToViewModel = BoardToViewModel.NullObject
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         paint.color = Color.WHITE
         canvas.drawPaint(paint)
         paint.color = Color.BLACK
-        if (null == boardModel) {
+        if (boardModel == BoardToViewModel.NullObject) {
             boardModel = BoardToViewModel(canvas.height, canvas.width, 15, 50)
         }
-        boardModel!!.getHorizontalLines().forEach { line ->
+        boardModel.getHorizontalLines().forEach { line ->
             canvas.drawLine(line.startX, line.startY, line.endX, line.endY, paint)
         }
-        boardModel!!.getVerticalLines().forEach { line ->
+        boardModel.getVerticalLines().forEach { line ->
             canvas.drawLine(line.startX, line.startY, line.endX, line.endY, paint)
         }
-        boardModel!!.getRectangles().forEach {r ->
+        boardModel.getRectangles().forEach {r ->
             paint.color = r.color
             canvas.drawRect(r.rect, paint)
         }
@@ -37,7 +37,7 @@ class BoardView(context: Context) : View(context) {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.getX()
         val y = event.getY()
-        boardModel!!.setRectByXy(x, y, Random().nextInt())
+        boardModel.setRectByXy(x, y, Random().nextInt())
         invalidate();
         return super.onTouchEvent(event)
     }

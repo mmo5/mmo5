@@ -4,8 +4,13 @@ import android.graphics.Color
 import android.graphics.Rect
 
 
-class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin: Int) {
-
+open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin: Int) {
+    init {
+        require(numOfCells > 0)
+        require(margin >= 0)
+        require(width >= numOfCells)
+        require(height >= numOfCells)
+    }
     private val roundedHeight = height - height.rem(numOfCells)
     private val roundedWidth = width - width.rem(numOfCells)
     private val isXBigger = roundedHeight < roundedWidth
@@ -63,13 +68,13 @@ class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin: Int
         return Pair(resX.toInt(), resY.toInt())
     }
 
-    fun getRectFromIndex(x: Int, y: Int): Rect {
-        return Rect(
-                x * boxSizeIncludeTopLeftLines + marginX,
-                y * boxSizeIncludeTopLeftLines + marginY,
-                x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
-                y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
-    }
+    fun getRectFromIndex(x: Int, y: Int): Rect = Rect(
+            x * boxSizeIncludeTopLeftLines + marginX,
+            y * boxSizeIncludeTopLeftLines + marginY,
+            x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
+            y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
+
+    object NullObject: BoardToViewModel(height = 0, width = 0, numOfCells = 1, margin = 0)
 }
 
 data class RectangleHolder(val rect: Rect, val color: Int)
