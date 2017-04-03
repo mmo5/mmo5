@@ -17,10 +17,12 @@ class LoginActivity : AppCompatActivity() {
 
         val signInButton = findViewById(R.id.sign_in_button) as Button
         signInButton.setOnClickListener {
-            if (userNameView.text.toString().isEmpty()) {
+            val userName = userNameView.text.toString()
+            if (userName.isEmpty()) {
                 Toast.makeText(applicationContext, "Please enter a user name", Toast.LENGTH_SHORT).show()
             } else {
                 val activityIntent = Intent(applicationContext, MainActivity::class.java)
+                activityIntent.putExtra("USER_NAME", userName)
                 startActivity(activityIntent)
             }
         }

@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.google.gson.Gson
 import mu.KotlinLogging
 import org.java_websocket.client.WebSocketClient
-import java.util.*
 
 
 private val logger = KotlinLogging.logger {}
@@ -15,10 +14,12 @@ class MainActivity : AppCompatActivity() {
 
     var playerId: Int = -1
     lateinit var client: WebSocketClient
-    val playerName = "player-${Random().nextInt()}"
+    lateinit var playerName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val boardView = BoardView(this)
+
+        playerName = intent.getStringExtra("USER_NAME")
 
         client = MessagesClient().connectWebSocket {
             messageString ->
