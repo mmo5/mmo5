@@ -1,6 +1,7 @@
 package mmo5.a5inarowmmo
 
 import android.os.Build
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.drafts.Draft_17
@@ -13,7 +14,7 @@ class MessagesClient {
 
     private val logger = KotlinLogging.logger {}
 
-    fun connectWebSocket(messageHandler: (String) -> Unit): WebSocketClient {
+    fun connectWebSocket(loginRequest: Message, messageHandler: (String) -> Unit): WebSocketClient {
         val uri: URI
         try {
             uri = URI("ws://mmo5.herokuapp.com/mmo5")
@@ -24,7 +25,8 @@ class MessagesClient {
         val webSocketClient = object : WebSocketClient(uri, Draft_17()) {
             override fun onOpen(serverHandshake: ServerHandshake) {
                 logger.info("Websocket Opened")
-                //this.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL)
+                logger.info("sending login request $loginRequest")
+                send(Gson().toJson(loginRequest))
             }
 
             override fun onMessage(s: String) {

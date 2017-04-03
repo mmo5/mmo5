@@ -3,10 +3,10 @@ package mmo5.a5inarowmmo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.google.common.collect.Maps
 import com.google.gson.Gson
 import mu.KotlinLogging
 import org.java_websocket.client.WebSocketClient
-import java.util.*
 
 
 private val logger = KotlinLogging.logger {}
@@ -15,12 +15,16 @@ class MainActivity : AppCompatActivity() {
 
     var playerId: Int = -1
     lateinit var client: WebSocketClient
-    val playerName = "player-${Random().nextInt()}"
+    lateinit var playerName: String
+    var lastPlayers = mapOf<Int, String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val boardView = BoardView(this)
 
-        client = MessagesClient().connectWebSocket {
+        playerName = intent.getStringExtra("USER_NAME")
+
+        val loginRequest = Message(msgType = MsgType.PlayerLoggedInRequest, playerLoggedInRequest = PlayerLoggedInRequest(playerName = playerName))
+        client = MessagesClient().connectWebSocket(loginRequest) {
             messageString ->
             val message = Gson().fromJson(messageString, Message::class.java)
             when (message.msgType) {
@@ -42,11 +46,15 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread { boardView.setRectByIndex(message?.playerMove ?: throw IllegalArgumentException("malformed message $message")) }
                 else -> logger.warn("!!!!! didnt handle $message")
             }
+            message.players?.let { newPlayersMap ->
+                val difference = Maps.difference(lastPlayers, newPlayersMap)
+                difference.entriesOnlyOnRight().forEach { key, value -> runOnUiThread {Toast.makeText(this, "$value joined", Toast.LENGTH_SHORT).show() }}
+                difference.entriesOnlyOnLeft().forEach { key, value -> runOnUiThread {Toast.makeText(this, "$value dropped", Toast.LENGTH_SHORT).show() }}
+                lastPlayers = newPlayersMap
+            }
         }
         setContentView(boardView)
-        val loginRequest = Message(msgType = MsgType.PlayerLoggedInRequest, playerLoggedInRequest = PlayerLoggedInRequest(playerName = playerName))
-        logger.info("sending login request $loginRequest")
-        client.send(Gson().toJson(loginRequest))
+
     }
 
     fun sendTouch(matrixLocationByXy: Pair<Int, Int>) {
