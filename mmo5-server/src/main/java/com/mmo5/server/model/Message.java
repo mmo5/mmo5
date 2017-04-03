@@ -14,7 +14,7 @@ public class Message {
   private final PlayerLoggedOutResponse playerLoggedOutResponse;
   private final PlayerMove playerMove;
   private final Winner winner;
-  private final Map<Integer, String> players;
+  private Map<Integer, String> players;
 
   private Message(Builder builder) {
     this.msgType = builder.msgType;
@@ -100,6 +100,10 @@ public class Message {
 
   public Map<Integer, String> getPlayers() {
     return players;
+  }
+
+  public void setPlayers(Map<Integer, String> players) {
+    this.players = players;
   }
 
   @Override

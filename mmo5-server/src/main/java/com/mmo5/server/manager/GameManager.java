@@ -23,7 +23,7 @@ public class GameManager {
   private final BoardManager boardManager;
   private final Cache<Integer, String> playerMoveCache = CacheBuilder.newBuilder()
           .maximumSize(200)
-          .expireAfterWrite(1, TimeUnit.SECONDS)
+          .expireAfterWrite(500, TimeUnit.MILLISECONDS)
           .build();
 
   public GameManager() {
@@ -52,7 +52,7 @@ public class GameManager {
     PlayerLoggedInRequest playerLoggedInRequest = msg.getPlayerLoggedInRequest();
     PlayerLoggedInResponse playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.incrementAndGet(), playerLoggedInRequest.getPlayerName());
     this.sessionPlayerMap.put(session, playerLoggedInResponse);
-    System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId());
+    System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId() + ", Message: " + playerLoggedInResponse);
     sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(getPlayers()).build());
   }
 
@@ -93,6 +93,7 @@ public class GameManager {
   }
 
   private void broadcastMessage(Message message) {
+    message.setPlayers(getPlayers());
     System.out.println("Sending Msg to all players: " + message);
     for (Session playerSession : this.sessionPlayerMap.keySet()) {
       sendMessage(playerSession, message);

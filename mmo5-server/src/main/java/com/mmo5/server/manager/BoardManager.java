@@ -70,7 +70,9 @@ public class BoardManager {
           winnerPositions.addAll(checkRight(playerId, new Position(i, j)));
           winnerPositions.addAll(checkBottomRight(playerId, new Position(i, j)));
           winnerPositions.addAll(checkBottom(playerId, new Position(i, j)));
-          if (winnerPositions.size() >= 5) winnerId = playerId;
+          if (winnerPositions.size() >= 5) {
+            winnerId = playerId;
+          }
         }
       }
     }
