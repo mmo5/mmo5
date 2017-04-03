@@ -42,13 +42,13 @@ public class Message {
       return new Message(this);
     }
 
-    public Builder PlayerLoggedIn(PlayerLoggedIn PlayerLoggedIn) {
-      this.playerLoggedIn = PlayerLoggedIn;
+    public Builder playerLoggedIn(PlayerLoggedIn playerLoggedIn) {
+      this.playerLoggedIn = playerLoggedIn;
       return this;
     }
 
-    public Builder PlayerLoggedOut(PlayerLoggedOut PlayerLoggedOut) {
-      this.playerLoggedOut = PlayerLoggedOut;
+    public Builder playerLoggedOut(PlayerLoggedOut playerLoggedOut) {
+      this.playerLoggedOut = playerLoggedOut;
       return this;
     }
 

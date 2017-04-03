@@ -1,12 +1,13 @@
 package com.mmo5.server.manager;
 
-import com.mmo5.server.model.BoardGame;
+import com.mmo5.server.model.Board;
 import com.mmo5.server.model.Message;
 import com.mmo5.server.model.MsgType;
 import com.mmo5.server.model.messages.PlayerLoggedIn;
 import com.mmo5.server.model.messages.PlayerMove;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import com.mmo5.server.model.messages.Winner;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
@@ -18,13 +19,13 @@ public class GameManager {
   private final Gson gson;
   private final AtomicInteger playerCounter;
   private final Map<Session, PlayerLoggedIn> sessionPlayerMap;
-  private final BoardGame boardGame;
+  private final Board board;
 
   public GameManager() {
     this.sessionPlayerMap = Maps.newConcurrentMap();
     this.playerCounter = new AtomicInteger(0);
     this.gson = new Gson();
-    this.boardGame = new BoardGame();
+    this.board = new Board();
   }
 
   public void handleIncomingMessage(Session session, String jsonMsg) {
@@ -42,12 +43,27 @@ public class GameManager {
     PlayerLoggedIn playerLoggedIn = new PlayerLoggedIn(this.playerCounter.incrementAndGet());
     this.sessionPlayerMap.put(session, playerLoggedIn);
     System.out.println("Player logged in: " + playerLoggedIn.getPlayerId());
-    broadcastMessage(Message.newMessage(MsgType.PlayerLoggedIn).PlayerLoggedIn(playerLoggedIn).build());
+    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedIn).playerLoggedIn(playerLoggedIn).build());
   }
 
   public void handleLogoutPlayer(Session session) {
     PlayerLoggedIn loggedOutPlayerLoggedIn = this.sessionPlayerMap.remove(session);
     System.out.println("Player logged Out: " + loggedOutPlayerLoggedIn.getPlayerId());
+  }
+
+
+  private void handlePlayerMove(Message message) {
+    PlayerMove playerMove = message.getPlayerMove();
+    synchronized (this.board) {
+      boolean isUpdated = this.board.updatePlayerMove(playerMove);
+      if (isUpdated) {
+        broadcastMessage(message);
+        Winner winner = this.board.checkWinner();
+        if (winner != null) {
+          Message.newMessage(MsgType.Winner).winner(winner).build();
+        }
+      }
+    }
   }
 
   private void broadcastMessage(Message message) {
@@ -62,13 +78,5 @@ public class GameManager {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  private void handlePlayerMove(Message message) {
-    broadcastMessage(message);
-  }
-
-  private void updateBoardGame(PlayerMove playerMove) {
-    // TODO: this.
   }
 }
