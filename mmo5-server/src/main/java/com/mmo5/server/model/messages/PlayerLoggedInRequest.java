@@ -4,15 +4,15 @@ import com.google.common.base.Objects;
 
 public class PlayerLoggedInRequest {
 
-  private final int playerId;
+  private final Integer playerId;
   private final String playerName;
 
-  public PlayerLoggedInRequest(int playerId, String playerName) {
+  public PlayerLoggedInRequest(Integer playerId, String playerName) {
     this.playerId = playerId;
     this.playerName = playerName;
   }
 
-  public int getPlayerId() {
+  public Integer getPlayerId() {
     return playerId;
   }
 

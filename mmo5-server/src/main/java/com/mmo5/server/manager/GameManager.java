@@ -53,12 +53,13 @@ public class GameManager {
   public void handlePlayerLoggedInRequestMsg(Session session, Message msg) {
     PlayerLoggedInRequest playerLoggedInRequest = msg.getPlayerLoggedInRequest();
     PlayerLoggedInResponse playerLoggedInResponse;
-    int playerId = playerLoggedInRequest.getPlayerId();
-    if (this.playerIdToSessionMap.containsKey(playerId)) {
+    Integer playerId = playerLoggedInRequest.getPlayerId();
+    if (playerId != null) {
       this.sessionPlayerMap.remove(this.playerIdToSessionMap.get(playerId));
       playerLoggedInResponse = new PlayerLoggedInResponse(playerId, playerLoggedInRequest.getPlayerName());
     } else {
-      playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.incrementAndGet(), playerLoggedInRequest.getPlayerName());
+      while (!this.playerIdToSessionMap.containsKey(this.playerCounter.incrementAndGet()));
+      playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.get(), playerLoggedInRequest.getPlayerName());
     }
     Map<Integer, String> players = getPlayers();
     this.sessionPlayerMap.put(session, playerLoggedInResponse);
