@@ -31,7 +31,12 @@ class MainActivity : AppCompatActivity() {
                 MsgType.Winner -> {
                     runOnUiThread { boardView.announceWinner(message.winner!!) }
                     runOnUiThread {
-                        val winNotice = if (message.winner?.playerId == playerId) "You won!!!" else "You Loose :-("
+                        var winNotice = "You Loose :-("
+                        if (message.winner?.playerId == playerId) {
+                            winNotice = "You won!!!"
+                        } else if (message.players?.get(message.winner?.playerId) != null) {
+                            winNotice = "${message.players?.get(message.winner?.playerId)} won :-("
+                        }
                         Toast.makeText(this, winNotice, Toast.LENGTH_LONG).show()
                     }
                 }
