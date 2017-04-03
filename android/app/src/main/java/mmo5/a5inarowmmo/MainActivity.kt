@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
             }
             message.players?.let { newPlayersMap ->
                 val difference = Maps.difference(lastPlayers, newPlayersMap)
-                difference.entriesOnlyOnRight().forEach { key, value -> runOnUiThread {Toast.makeText(this, "$value joined", Toast.LENGTH_SHORT).show() }}
-                difference.entriesOnlyOnLeft().forEach { key, value -> runOnUiThread {Toast.makeText(this, "$value dropped", Toast.LENGTH_SHORT).show() }}
+                difference.entriesOnlyOnRight().forEach { entry -> runOnUiThread {Toast.makeText(this, "${entry.value} joined", Toast.LENGTH_SHORT).show() }}
+                difference.entriesOnlyOnLeft().forEach { entry -> runOnUiThread {Toast.makeText(this, "${entry.value} dropped", Toast.LENGTH_SHORT).show() }}
                 lastPlayers = newPlayersMap
             }
         }
