@@ -20,7 +20,7 @@ public class GameManager {
   private final Gson gson;
   private final AtomicInteger playerCounter;
   private final Map<Session, PlayerLoggedInResponse> sessionPlayerMap;
-  private final BoardManager boardManager;
+  private final BoardManagerV2 boardManager;
   private final Cache<Integer, String> playerMoveCache = CacheBuilder.newBuilder()
           .maximumSize(200)
           .expireAfterWrite(500, TimeUnit.MILLISECONDS)
@@ -30,7 +30,7 @@ public class GameManager {
     this.sessionPlayerMap = Maps.newConcurrentMap();
     this.playerCounter = new AtomicInteger(0);
     this.gson = new Gson();
-    this.boardManager = new BoardManager();
+    this.boardManager = new BoardManagerV2(15, 5);
   }
 
   public void handleIncomingMessage(Session session, String jsonMsg) {
@@ -55,7 +55,10 @@ public class GameManager {
     System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId() + ", Message: " + playerLoggedInResponse);
     Map<Integer, String> players = getPlayers();
     sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(players).build());
-    this.boardManager.getPlayersMove().forEach(playerMove -> sendMessage(session, Message.newMessage(MsgType.PlayerMove).playerMove(playerMove).players(players).build()));
+    this.boardManager.getPlayersMove().forEach(playerMove -> {
+      System.out.println("Send player move: " + playerMove);
+      sendMessage(session, Message.newMessage(MsgType.PlayerMove).playerMove(playerMove).players(players).build());
+    });
 
   }
 

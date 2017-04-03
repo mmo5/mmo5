@@ -14,6 +14,15 @@ class BoardManagerV2(val boardSize: Int = 15, val winSeq: Int = 5) {
     fun initBoard() {
         board = (1..boardSize).map { (1..boardSize).map { NO_PLAYER }.toMutableList() }.toMutableList()
     }
+
+    fun getPlayersMove(): List<PlayerMove> {
+        val playerMoves = arrayListOf<PlayerMove>()
+        for ((x, list) in board.withIndex()) {
+            list.mapIndexedTo(playerMoves) { y, playerId -> PlayerMove(playerId, Position(x, y)) }
+        }
+        return playerMoves
+    }
+
     fun getUserIdAtPosition(position: Position): Int {
         return this.board[position.x][position.y]
     }
@@ -67,44 +76,43 @@ class BoardManagerV2(val boardSize: Int = 15, val winSeq: Int = 5) {
         if (!isValidPosition(newPosition) || getUserIdAtPosition(newPosition) != playerId) {//stop searching
             if (currentListOfPositions.size >= winSeq) {
                 return currentListOfPositions
-            }
-            else {
+            } else {
                 return emptyList()
             }
         }
         return checkBottomRight(playerId, newPosition, currentListOfPositions + listOf(newPosition))
     }
+
     private fun checkTopRight(playerId: Int, position: Position, currentListOfPositions: List<Position>): List<Position> {
         val newPosition = Position(position.x + 1, position.y - 1)
         if (!isValidPosition(newPosition) || getUserIdAtPosition(newPosition) != playerId) {//stop searching
             if (currentListOfPositions.size >= winSeq) {
                 return currentListOfPositions
-            }
-            else {
+            } else {
                 return emptyList()
             }
         }
         return checkTopRight(playerId, newPosition, currentListOfPositions + listOf(newPosition))
     }
+
     private fun checkRight(playerId: Int, position: Position, currentListOfPositions: List<Position>): List<Position> {
         val newPosition = Position(position.x + 1, position.y)
         if (!isValidPosition(newPosition) || getUserIdAtPosition(newPosition) != playerId) {//stop searching
             if (currentListOfPositions.size >= winSeq) {
                 return currentListOfPositions
-            }
-            else {
+            } else {
                 return emptyList()
             }
         }
         return checkRight(playerId, newPosition, currentListOfPositions + listOf(newPosition))
     }
+
     private fun checkBottom(playerId: Int, position: Position, currentListOfPositions: List<Position>): List<Position> {
         val newPosition = Position(position.x, position.y + 1)
         if (!isValidPosition(newPosition) || getUserIdAtPosition(newPosition) != playerId) {//stop searching
             if (currentListOfPositions.size >= winSeq) {
                 return currentListOfPositions
-            }
-            else {
+            } else {
                 return emptyList()
             }
         }
