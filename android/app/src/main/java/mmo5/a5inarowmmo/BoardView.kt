@@ -26,7 +26,6 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
             0xFF00FFFF.toInt(),
             YELLOW,
             0xFFFF00FF.toInt(),
-            0xFF00FF00.toInt(),
             0xFF800000.toInt(),
             0xFF000080.toInt(),
             0xFF808000.toInt(),
