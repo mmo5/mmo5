@@ -10,6 +10,7 @@ public class Winner {
   private final int playerId;
   private final List<Position> positions;
 
+
   public Winner(int playerId, List<Position> positions) {
     this.playerId = playerId;
     this.positions = positions;
