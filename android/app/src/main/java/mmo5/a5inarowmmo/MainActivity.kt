@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import mu.KotlinLogging
 import org.java_websocket.client.WebSocketClient
 import android.app.ProgressDialog
-
+import android.widget.Toast
 
 
 private val logger = KotlinLogging.logger {}
@@ -26,6 +26,10 @@ class MainActivity : AppCompatActivity() {
             messageString ->
             val message = Gson().fromJson(messageString, Message::class.java)
             when (message.msgType) {
+                MsgType.Winner -> {
+                    boardView.announceWinner(message.winner!!)
+                    runOnUiThread { Toast.makeText(this, "And we have a winner! ${message.winner.playerId}", Toast.LENGTH_LONG).show() }
+                }
                 MsgType.PlayerLoggedIn -> {
                     playerId = message.playerLoggedIn?.playerId ?: throw IllegalArgumentException("malformed message $message")
                     logger.info("setting player id to $playerId")
