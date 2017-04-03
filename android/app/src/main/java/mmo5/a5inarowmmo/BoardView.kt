@@ -1,17 +1,16 @@
 package mmo5.a5inarowmmo
 
-import android.animation.Animator
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Color.*
 import android.graphics.Paint
 import android.graphics.Rect
+import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewAnimationUtils
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import android.os.Handler
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 
 class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
@@ -19,6 +18,8 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
     private val paint: Paint = Paint()
     private val playersColors = listOf(BLUE, RED, CYAN, YELLOW)
     private var boardModel: BoardToViewModel = BoardToViewModel.NullObject
+    var boardLocked = false
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         paint.color = Color.WHITE
@@ -47,7 +48,12 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
         val matrixLocationByXy = boardModel.getMatrixLocationByXy(x, y)
         if (matrixLocationByXy.first < 0 || matrixLocationByXy.first >= boardModel.numOfCells ||
                 matrixLocationByXy.second < 0 || matrixLocationByXy.second >= boardModel.numOfCells) {
-            return true
+            logger.info("point out of bounds")
+            return false
+        }
+        if (boardLocked) {
+            logger.info("board locked")
+            return false
         }
         showTouchEffect(x, y, matrixLocationByXy)
         mainActivity.sendTouch(matrixLocationByXy)
@@ -68,6 +74,7 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
     }
 
     fun announceWinner(winner: Winner) {
+        boardLocked = true
         winner.positions?.forEach {
             boardModel.setRectByIndex(Pair(it.x, it.y), Color.GREEN)
         }
@@ -76,6 +83,7 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
         handler.postDelayed({
             boardModel.resetMoves()
             invalidate()
+            boardLocked = false
         }, 4000)
     }
 }
