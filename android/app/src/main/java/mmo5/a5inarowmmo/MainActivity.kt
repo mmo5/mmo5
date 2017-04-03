@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
             val message = Gson().fromJson(messageString, Message::class.java)
             when (message.msgType) {
                 MsgType.Winner -> {
-                    boardView.announceWinner(message.winner!!)
-                    runOnUiThread { Toast.makeText(this, "And we have a winner! ${message.winner.playerId}", Toast.LENGTH_LONG).show() }
+                    runOnUiThread { boardView.announceWinner(message.winner!!) }
+                    runOnUiThread { Toast.makeText(this, "We have a winner!!! ${message.winner?.playerId}", Toast.LENGTH_LONG).show() }
                 }
                 MsgType.PlayerLoggedIn -> {
                     playerId = message.playerLoggedIn?.playerId ?: throw IllegalArgumentException("malformed message $message")
