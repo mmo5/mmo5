@@ -17,15 +17,18 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
     private val sizeBeforeMarginReduction = Math.min(roundedHeight, roundedWidth)
     private val sizeAfterMarginReduction = sizeBeforeMarginReduction - (margin * 2)
     private val boxSizeIncludeTopLeftLines = (sizeAfterMarginReduction / numOfCells)
-    private val rectangles: MutableList<MutableList<RectangleHolder>> =
+    private var rectangles: MutableList<MutableList<RectangleHolder>> = createEmptyMoves()
+
+    private fun createEmptyMoves(): MutableList<MutableList<RectangleHolder>> {
+        return (1..numOfCells).map {
             (1..numOfCells).map {
-                (1..numOfCells).map {
-                    RectangleHolder(rect = Rectangle(0, 0, 0, 0), color = 0xFFFFFFFF.toInt()
-                            /**WHITE**/
-                    )
-                }
-                        .toMutableList()
-            }.toMutableList()
+                RectangleHolder(rect = Rectangle(0, 0, 0, 0), color = 0xFFFFFFFF.toInt()
+                        /**WHITE**/
+                )
+            }
+                    .toMutableList()
+        }.toMutableList()
+    }
 
     fun getHorizontalLines(): List<ViewLine> {
         return (0..numOfCells).map { index ->
@@ -81,6 +84,10 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
             bottomY = y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
 
     object NullObject : BoardToViewModel(height = 1, width = 1, numOfCells = 1, margin = 0)
+
+    fun resetMoves() {
+        rectangles = createEmptyMoves()
+    }
 }
 
 data class Rectangle(val leftX: Int, val topY: Int, val rightX: Int, val bottomY: Int)

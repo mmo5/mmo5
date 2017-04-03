@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 
 class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
 
@@ -50,6 +51,14 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
     fun setRectByIndex(playerMove: PlayerMove) {
         boardModel.setRectByIndex(Pair(playerMove.position.x, playerMove.position.y),
                 playersColors[playerMove.playerId.rem(playersColors.size)])
+        invalidate()
+    }
+
+    fun announceWinner(winner: Winner) {
+//        winner.positions.forEach {
+//            boardModel.setRectByIndex(Pair(it.x, it.y), Color.GREEN)
+//        }
+        boardModel.resetMoves()
         invalidate()
     }
 }
