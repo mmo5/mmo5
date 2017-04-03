@@ -2,6 +2,7 @@ package mmo5.a5inarowmmo
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -9,5 +10,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val b = BoardView(this)
         setContentView(b)
+        MessagesClient().connectWebSocket {
+            message -> Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }
     }
 }

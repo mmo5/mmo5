@@ -71,7 +71,7 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
             rightX = x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
             bottomY = y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
 
-    object NullObject: BoardToViewModel(height = 0, width = 0, numOfCells = 1, margin = 0)
+    object NullObject: BoardToViewModel(height = 1, width = 1, numOfCells = 1, margin = 0)
 }
 
 data class Rectangle(val leftX: Int, val topY: Int, val rightX: Int, val bottomY: Int)
