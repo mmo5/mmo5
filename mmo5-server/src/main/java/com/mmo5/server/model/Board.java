@@ -6,7 +6,7 @@ import com.mmo5.server.model.messages.Winner;
 
 public class Board {
 
-  private final int SIZE = 10;
+  private final int SIZE = 15;
 
   private Integer[][] board;
 
