@@ -2,11 +2,10 @@ package mmo5.a5inarowmmo
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.google.gson.Gson
 import mu.KotlinLogging
 import org.java_websocket.client.WebSocketClient
-import android.app.ProgressDialog
-import android.widget.Toast
 
 
 private val logger = KotlinLogging.logger {}
@@ -17,8 +16,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var client: WebSocketClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val dialog = ProgressDialog.show(this@MainActivity, "",
-                "Loading. Please wait...", true)
         super.onCreate(savedInstanceState)
         val boardView = BoardView(this)
 
@@ -27,8 +24,8 @@ class MainActivity : AppCompatActivity() {
             val message = Gson().fromJson(messageString, Message::class.java)
             when (message.msgType) {
                 MsgType.Winner -> {
-                    boardView.announceWinner(message.winner!!)
-                    runOnUiThread { Toast.makeText(this, "And we have a winner! ${message.winner.playerId}", Toast.LENGTH_LONG).show() }
+                    runOnUiThread { boardView.announceWinner(message.winner!!) }
+                    runOnUiThread { Toast.makeText(this, "We have a winner!!! ${message.winner?.playerId}", Toast.LENGTH_LONG).show() }
                 }
                 MsgType.PlayerLoggedIn -> {
                     playerId = message.playerLoggedIn?.playerId ?: throw IllegalArgumentException("malformed message $message")
@@ -40,7 +37,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         setContentView(boardView)
-        dialog.cancel()
     }
 
     fun sendTouch(matrixLocationByXy: Pair<Int, Int>) {
