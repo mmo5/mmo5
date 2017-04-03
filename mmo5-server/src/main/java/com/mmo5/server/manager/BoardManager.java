@@ -17,7 +17,7 @@ public class BoardManager {
   private Integer[][] board;
 
   public BoardManager() {
-   initBoard();
+    initBoard();
   }
 
   public void initBoard() {
@@ -30,7 +30,7 @@ public class BoardManager {
 
   public boolean validatePosition(Position position) {
     return position.getY() < SIZE &&
-            position.getY() >=0 &&
+            position.getY() >= 0 &&
             position.getX() < SIZE &&
             position.getX() >= 0;
   }
@@ -67,7 +67,10 @@ public class BoardManager {
           positions.addAll(checkRight(playerId, new Position(i, j)));
           positions.addAll(checkBottomRight(playerId, new Position(i, j)));
           positions.addAll(checkBottom(playerId, new Position(i, j)));
-          return new Winner(playerId, Lists.newArrayList(positions));
+          ArrayList<Position> winnerPositions = Lists.newArrayList(positions);
+          if (winnerPositions.size() > 5) {
+            return new Winner(playerId, winnerPositions);
+          }
         }
       }
     }
@@ -78,8 +81,8 @@ public class BoardManager {
     List<Position> winPositions = new ArrayList<>(5);
     winPositions.add(position);
     for (int i = 1; i < 5; i++) {
-      position.setX(position.getX()+1);
-      position.setY(position.getY()-1);
+      position.setX(position.getX() + 1);
+      position.setY(position.getY() - 1);
       if (isNotValidPositionToWin(playerId, position)) {
         return Lists.newArrayList();
       }
@@ -93,7 +96,7 @@ public class BoardManager {
     List<Position> winPositions = new ArrayList<>(5);
     winPositions.add(position);
     for (int i = 1; i < 5; i++) {
-      position.setX(position.getX()+1);
+      position.setX(position.getX() + 1);
       if (isNotValidPositionToWin(playerId, position)) {
         return Lists.newArrayList();
       }
@@ -109,8 +112,8 @@ public class BoardManager {
     List<Position> winPositions = new ArrayList<>(5);
     winPositions.add(position);
     for (int i = 1; i < 5; i++) {
-      position.setX(position.getX()+1);
-      position.setY(position.getY()+1);
+      position.setX(position.getX() + 1);
+      position.setY(position.getY() + 1);
       if (isNotValidPositionToWin(playerId, position)) {
         return Lists.newArrayList();
       }
@@ -122,7 +125,7 @@ public class BoardManager {
     List<Position> winPositions = new ArrayList<>(5);
     winPositions.add(position);
     for (int i = 1; i < 5; i++) {
-      position.setY(position.getY()+1);
+      position.setY(position.getY() + 1);
       if (isNotValidPositionToWin(playerId, position)) {
         return Lists.newArrayList();
       }
