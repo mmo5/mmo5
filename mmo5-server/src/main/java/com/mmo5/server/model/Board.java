@@ -93,11 +93,12 @@ public class Board {
   }
 
   private boolean checkPoint(int playerId, Position position) {
-    return !isOccupiedByPlayer(position, playerId);
+    return validatePosition(position) && !isOccupiedByPlayer(position, playerId);
   }
 
   private boolean checkBottomRight(int playerId, Position position) {
     for (int i = 1; i < 5; i++) {
+
       position.setX(position.getX()+1);
       position.setY(position.getY()+1);
       if (checkPoint(playerId, position))
@@ -114,4 +115,7 @@ public class Board {
     }
     return true;
   }
+
+
+
 }
