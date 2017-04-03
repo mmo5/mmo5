@@ -72,6 +72,6 @@ class BoardToViewModelTest {
     @Test fun `getRectFromIndex`() {
         val tested = BoardToViewModel(100, 100, 2, 0)
         val rect = tested.getRectFromIndex(0, 0)
-        assertEquals(Rectangle(0, 0, 50, 50), rect)
+        assertEquals(Rectangle(1, 1, 50, 50), rect)
     }
 }

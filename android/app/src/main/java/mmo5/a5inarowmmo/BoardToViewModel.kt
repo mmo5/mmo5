@@ -75,8 +75,8 @@ open class BoardToViewModel(height: Int, width: Int, val numOfCells: Int, margin
     }
 
     fun getRectFromIndex(x: Int, y: Int): Rectangle = Rectangle(
-            leftX = x * boxSizeIncludeTopLeftLines + marginX,
-            topY = y * boxSizeIncludeTopLeftLines + marginY,
+            leftX = x * boxSizeIncludeTopLeftLines + marginX + 1,
+            topY = y * boxSizeIncludeTopLeftLines + marginY + 1,
             rightX = x * boxSizeIncludeTopLeftLines + marginX + boxSizeIncludeTopLeftLines,
             bottomY = y * boxSizeIncludeTopLeftLines + marginY + boxSizeIncludeTopLeftLines)
 
