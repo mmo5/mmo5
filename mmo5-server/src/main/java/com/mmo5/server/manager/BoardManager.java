@@ -13,6 +13,7 @@ import java.util.Set;
 public class BoardManager {
 
   private final int SIZE = 15;
+  private final int NO_WINNER = -99;
 
   private Integer[][] board;
 
@@ -58,23 +59,23 @@ public class BoardManager {
   }
 
   public Winner checkWinner() {
+    Set<Position> winnerPositions = Sets.newHashSet();
+    int winnerId = NO_WINNER;
+
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
         Integer playerId = board[i][j];
         if (playerId != null) {
-          Set<Position> positions = Sets.newHashSet();
-          positions.addAll(checkTopRight(playerId, new Position(i, j)));
-          positions.addAll(checkRight(playerId, new Position(i, j)));
-          positions.addAll(checkBottomRight(playerId, new Position(i, j)));
-          positions.addAll(checkBottom(playerId, new Position(i, j)));
-          ArrayList<Position> winnerPositions = Lists.newArrayList(positions);
-          if (winnerPositions.size() >= 5) {
-            return new Winner(playerId, winnerPositions);
-          }
+          winnerPositions.addAll(checkTopRight(playerId, new Position(i, j)));
+          winnerPositions.addAll(checkRight(playerId, new Position(i, j)));
+          winnerPositions.addAll(checkBottomRight(playerId, new Position(i, j)));
+          winnerPositions.addAll(checkBottom(playerId, new Position(i, j)));
+          if (winnerPositions.size() >= 5) winnerId = playerId;
         }
       }
     }
-    return null;
+
+    return winnerId == NO_WINNER ? null : new Winner(winnerId, Lists.newArrayList(winnerPositions));
   }
 
   private List<Position> checkTopRight(int playerId, Position position) {
