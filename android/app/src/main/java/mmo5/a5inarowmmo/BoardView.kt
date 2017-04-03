@@ -52,7 +52,7 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
             return false
         }
         if (boardLocked) {
-            logger.info("board locked")
+            logger.info("onTouchEvent - board locked")
             return false
         }
         showTouchEffect(x, y, matrixLocationByXy)
@@ -68,6 +68,10 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
     }
 
     fun setRectByIndex(playerMove: PlayerMove) {
+        if (boardLocked) {
+            logger.info("setRectByIndex - board locked")
+            return
+        }
         boardModel.setRectByIndex(Pair(playerMove.position.x, playerMove.position.y),
                 playersColors[playerMove.playerId.rem(playersColors.size)])
         invalidate()
