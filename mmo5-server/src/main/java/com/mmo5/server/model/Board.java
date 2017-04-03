@@ -10,6 +10,10 @@ public class Board {
 
   private Integer[][] board;
 
+  public Board() {
+   initBoard();
+  }
+
   public void initBoard() {
     this.board = new Integer[SIZE][SIZE];
   }
@@ -32,7 +36,7 @@ public class Board {
 
   public boolean updatePlayerMove(PlayerMove playerMove) {
     Position position = playerMove.getPosition();
-    if (validatePosition(position)) {
+    if (!validatePosition(position)) {
       return false;
     }
     if (getUserIdAtPosition(position) != null) {
@@ -48,7 +52,66 @@ public class Board {
   }
 
   public Winner checkWinner() {
-    // TODO: this!!
+    return hasFiveInARow();
+  }
+
+  private Winner hasFiveInARow() {
+    for (int i = 0; i < SIZE; i++) {
+      for (int j = 0; j < SIZE; j++) {
+        Integer playerId = board[i][j];
+        if (playerId != null) {
+          final boolean isWinner = checkTopRight(playerId, new Position(i, j)) ||
+                  checkRight(playerId, new Position(i, j)) ||
+                  checkBottomRight(playerId, new Position(i, j)) ||
+                  checkBottom(playerId, new Position(i, j));
+          if (isWinner) {
+            return new Winner(playerId, null);
+          }
+        }
+      }
+    }
     return null;
+  }
+
+  private boolean checkTopRight(int playerId, Position position) {
+    for (int i = 1; i < 5; i++) {
+      position.setX(position.getX()+1);
+      position.setY(position.getY()-1);
+      if (checkPoint(playerId, position))
+        return false;
+    }
+    return true;
+  }
+
+  private boolean checkRight(int playerId, Position position) {
+    for (int i = 1; i < 5; i++) {
+      position.setX(position.getX()+1);
+      if (checkPoint(playerId, position))
+        return false;
+    }
+    return true;
+  }
+
+  private boolean checkPoint(int playerId, Position position) {
+    return !isOccupiedByPlayer(position, playerId);
+  }
+
+  private boolean checkBottomRight(int playerId, Position position) {
+    for (int i = 1; i < 5; i++) {
+      position.setX(position.getX()+1);
+      position.setY(position.getY()+1);
+      if (checkPoint(playerId, position))
+        return false;
+    }
+    return true;
+  }
+
+  private boolean checkBottom(int playerId, Position position) {
+    for (int i = 1; i < 5; i++) {
+      position.setY(position.getY()+1);
+      if (checkPoint(playerId, position))
+        return false;
+    }
+    return true;
   }
 }
