@@ -16,7 +16,25 @@ private val logger = KotlinLogging.logger {}
 class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
 
     private val paint: Paint = Paint()
-    private val playersColors = listOf(BLUE, RED, CYAN, YELLOW)
+    private val playersColors = listOf(
+            BLUE,
+            RED,
+            GRAY,
+            CYAN,
+            LTGRAY,
+            MAGENTA,
+            0xFF00FFFF.toInt(),
+            YELLOW,
+            0xFFFF00FF.toInt(),
+            0xFF00FF00.toInt(),
+            0xFF800000.toInt(),
+            0xFF000080.toInt(),
+            0xFF808000.toInt(),
+            0xFF800080.toInt(),
+            0xFFC0C0C0.toInt(),
+            DKGRAY,
+            0xFF008080.toInt())
+
     private var boardModel: BoardToViewModel = BoardToViewModel.NullObject
     var boardLocked = true
 
