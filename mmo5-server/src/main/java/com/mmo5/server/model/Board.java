@@ -93,7 +93,7 @@ public class Board {
   }
 
   private boolean checkPoint(int playerId, Position position) {
-    return validatePosition(position) && !isOccupiedByPlayer(position, playerId);
+    return !validatePosition(position) || !isOccupiedByPlayer(position, playerId);
   }
 
   private boolean checkBottomRight(int playerId, Position position) {
