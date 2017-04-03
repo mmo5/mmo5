@@ -1,5 +1,6 @@
 package mmo5.a5inarowmmo
 
+import android.animation.Animator
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Color.*
@@ -7,7 +8,11 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
+import android.view.ViewAnimationUtils
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+
+
 
 class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
 
@@ -44,8 +49,16 @@ class BoardView(val mainActivity: MainActivity) : View(mainActivity) {
                 matrixLocationByXy.second < 0 || matrixLocationByXy.second >= boardModel.numOfCells) {
             return true
         }
-        mainActivity.sendTouch(boardModel.getMatrixLocationByXy(x, y))
-        return super.onTouchEvent(event)
+        showTouchEffect(x, y, matrixLocationByXy)
+        mainActivity.sendTouch(matrixLocationByXy)
+        return false
+    }
+
+    private fun showTouchEffect(x: Float, y: Float, matrixLocationByXy: Pair<Int, Int>) {
+//        val finalRadius = 30f
+//        val anim = ViewAnimationUtils.createCircularReveal(this, x.toInt(), y.toInt(), 0f, finalRadius)
+//        this.visibility = View.VISIBLE
+//        anim.start()
     }
 
     fun setRectByIndex(playerMove: PlayerMove) {

@@ -25,7 +25,10 @@ class MainActivity : AppCompatActivity() {
             when (message.msgType) {
                 MsgType.Winner -> {
                     runOnUiThread { boardView.announceWinner(message.winner!!) }
-                    runOnUiThread { Toast.makeText(this, "We have a winner!!! ${message.winner?.playerId}", Toast.LENGTH_LONG).show() }
+                    runOnUiThread {
+                        val winNotice = if (message.winner?.playerId == playerId) "You won!!!" else "You Loose :-("
+                        Toast.makeText(this, winNotice, Toast.LENGTH_LONG).show()
+                    }
                 }
                 MsgType.PlayerLoggedIn -> {
                     playerId = message.playerLoggedIn?.playerId ?: throw IllegalArgumentException("malformed message $message")
