@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.google.common.collect.Maps
 import com.google.gson.Gson
 import mu.KotlinLogging
-import org.java_websocket.client.WebSocketClient
 
 
 private val logger = KotlinLogging.logger {}
@@ -14,7 +13,7 @@ private val logger = KotlinLogging.logger {}
 class MainActivity : AppCompatActivity() {
 
     var playerId: Int = -1
-    lateinit var client: WebSocketClient
+    lateinit var client: SelfRecoverWebSocketHolder
     lateinit var playerName: String
     var lastPlayers = mapOf<Int, String>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                         if (message.winner?.playerId == playerId) {
                             winNotice = "You won!!!"
                         } else if (message.players?.get(message.winner?.playerId) != null) {
-                            winNotice = "${message.players?.get(message.winner?.playerId)} won :-("
+                            winNotice = "${message.players[message.winner?.playerId]} won :-("
                         }
                         Toast.makeText(this, winNotice, Toast.LENGTH_LONG).show()
                     }
@@ -45,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                         logger.warn("wrong username $playerName != ${message.playerLoggedInResponse?.playerName}")
                     }
                     playerId = message.playerLoggedInResponse?.playerId ?: throw IllegalArgumentException("malformed message $message")
+                    loginRequest.playerLoggedInRequest?.let { it.playerId = playerId }
                     logger.info("setting player id to $playerId")
                     boardView.boardLocked = false
                 }
