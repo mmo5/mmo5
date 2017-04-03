@@ -55,7 +55,9 @@ public class GameManager {
     PlayerLoggedInResponse playerLoggedInResponse;
     Integer playerId = playerLoggedInRequest.getPlayerId();
     if (playerId != null) {
-      this.sessionPlayerMap.remove(this.playerIdToSessionMap.get(playerId));
+      if (this.playerIdToSessionMap.containsKey(playerId)) {
+        this.sessionPlayerMap.remove(this.playerIdToSessionMap.get(playerId));
+      }
       playerLoggedInResponse = new PlayerLoggedInResponse(playerId, playerLoggedInRequest.getPlayerName());
     } else {
       while (!this.playerIdToSessionMap.containsKey(this.playerCounter.incrementAndGet()));
@@ -79,11 +81,13 @@ public class GameManager {
 
   public void handleLogoutPlayer(Session session) {
     PlayerLoggedInResponse loggedOutPlayerLoggedInResponse = this.sessionPlayerMap.remove(session);
-    this.playerIdToSessionMap.remove(loggedOutPlayerLoggedInResponse.getPlayerId());
-    if (loggedOutPlayerLoggedInResponse != null) {
-      PlayerLoggedOutResponse playerLoggedOutResponse = new PlayerLoggedOutResponse(loggedOutPlayerLoggedInResponse.getPlayerId(), loggedOutPlayerLoggedInResponse.getPlayerName());
-      System.out.println("Player logged Out: " + playerLoggedOutResponse);
-      broadcastMessage(Message.newMessage(MsgType.PlayerLoggedOutResponse).playerLoggedOutResponse(playerLoggedOutResponse).players(getPlayers()).build());
+    if (loggedOutPlayerLoggedInResponse.getPlayerId() != null) {
+      this.playerIdToSessionMap.remove(loggedOutPlayerLoggedInResponse.getPlayerId());
+      if (loggedOutPlayerLoggedInResponse != null) {
+        PlayerLoggedOutResponse playerLoggedOutResponse = new PlayerLoggedOutResponse(loggedOutPlayerLoggedInResponse.getPlayerId(), loggedOutPlayerLoggedInResponse.getPlayerName());
+        System.out.println("Player logged Out: " + playerLoggedOutResponse);
+        broadcastMessage(Message.newMessage(MsgType.PlayerLoggedOutResponse).playerLoggedOutResponse(playerLoggedOutResponse).players(getPlayers()).build());
+      }
     }
   }
 
