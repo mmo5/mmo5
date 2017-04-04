@@ -51,28 +51,29 @@ public class GameManager {
   }
 
   public void handlePlayerLoggedInRequestMsg(Session session, Message msg) {
-    PlayerLoggedInRequest playerLoggedInRequest = msg.getPlayerLoggedInRequest();
-    PlayerLoggedInResponse playerLoggedInResponse;
-    Integer playerId = playerLoggedInRequest.getPlayerId();
-    if (playerId != null) {
-      if (this.playerIdToSessionMap.containsKey(playerId)) {
-        this.sessionPlayerMap.remove(this.playerIdToSessionMap.get(playerId));
+    synchronized (sessionPlayerMap) {
+      PlayerLoggedInRequest playerLoggedInRequest = msg.getPlayerLoggedInRequest();
+      PlayerLoggedInResponse playerLoggedInResponse;
+      Integer playerId = playerLoggedInRequest.getPlayerId();
+      if (playerId != null) {
+        if (this.playerIdToSessionMap.containsKey(playerId)) {
+          this.sessionPlayerMap.remove(this.playerIdToSessionMap.get(playerId));
+        }
+        playerLoggedInResponse = new PlayerLoggedInResponse(playerId, playerLoggedInRequest.getPlayerName());
+      } else {
+        while (this.playerIdToSessionMap.containsKey(this.playerCounter.incrementAndGet())) ;
+        playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.get(), playerLoggedInRequest.getPlayerName());
       }
-      playerLoggedInResponse = new PlayerLoggedInResponse(playerId, playerLoggedInRequest.getPlayerName());
-    } else {
-      while (this.playerIdToSessionMap.containsKey(this.playerCounter.incrementAndGet()));
-      playerLoggedInResponse = new PlayerLoggedInResponse(this.playerCounter.get(), playerLoggedInRequest.getPlayerName());
+      Map<Integer, String> players = getPlayers();
+      this.sessionPlayerMap.put(session, playerLoggedInResponse);
+      this.playerIdToSessionMap.put(playerLoggedInResponse.getPlayerId(), session);
+      System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId() + ", Message: " + playerLoggedInResponse);
+      sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(players).build());
+      this.boardManager.getPlayersMove().forEach(playerMove -> {
+        System.out.println("Send player move: " + playerMove);
+        sendMessage(session, Message.newMessage(MsgType.PlayerMove).playerMove(playerMove).players(players).build());
+      });
     }
-    Map<Integer, String> players = getPlayers();
-    this.sessionPlayerMap.put(session, playerLoggedInResponse);
-    this.playerIdToSessionMap.put(playerLoggedInResponse.getPlayerId(), session);
-    System.out.println("Player logged in: " + playerLoggedInResponse.getPlayerName() + ", Id: " + playerLoggedInResponse.getPlayerId() + ", Message: " + playerLoggedInResponse);
-    sendMessage(session, Message.newMessage(MsgType.PlayerLoggedInResponse).playerLoggedInResponse(playerLoggedInResponse).players(players).build());
-    this.boardManager.getPlayersMove().forEach(playerMove -> {
-      System.out.println("Send player move: " + playerMove);
-      sendMessage(session, Message.newMessage(MsgType.PlayerMove).playerMove(playerMove).players(players).build());
-    });
-
   }
 
   public void handleLoginPlayer(Session session) {
@@ -130,7 +131,7 @@ public class GameManager {
     }
   }
 
-  private Map<Integer, String> getPlayers() {
+  private synchronized Map<Integer, String> getPlayers() {
     return this.sessionPlayerMap.values().stream().collect(Collectors.toMap(PlayerLoggedInResponse::getPlayerId, PlayerLoggedInResponse::getPlayerName));
   }
 }
